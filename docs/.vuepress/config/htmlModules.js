@@ -20,6 +20,11 @@
 
 
 module.exports = {
+  sidebarT: `
+    <a href="https://docs.eoapi.io/?utm_source=ZZ090402" target="_blank">
+      <img class="no-zoom" height="60" width="224" src="/img/donate/eoapi-banner.gif">
+    </a>
+  `,
   // 万维广告
   pageT: `
   <div class="wwads-cn wwads-horizontal page-wwads" data-id="130"></div>
