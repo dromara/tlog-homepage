@@ -199,27 +199,32 @@ TLog在2020年获得“Gitee最有价值开源项目“奖项（GVP）。
 </span>
 <span style="width: 150px;text-align: left">
     <a href="https://gitee.com/dromara/MaxKey" target="_blank">
-        <img :src="$withBase('/img/dromara/maxkey-logo.png')" class="no-zoom" style="height:40px;width:150px;margin: 10px;">
+        <img :src="$withBase('/img/dromara/maxkey-logo.png')" class="no-zoom" style="height:40px;width:140px;margin: 10px;">
     </a>
 </span>
 <span style="width: 150px;text-align: left">
     <a href="https://gitee.com/dromara/gobrs-async" target="_blank">
-        <img :src="$withBase('/img/dromara/gobrsasync-logo.png')" class="no-zoom" style="height:40px;width:150px;margin: 10px;">
+        <img :src="$withBase('/img/dromara/gobrsasync-logo.png')" class="no-zoom" style="height:40px;width:140px;margin: 10px;">
     </a>
 </span>
 <span style="width: 150px;text-align: left">
     <a href="https://gitee.com/dromara/x-easypdf" target="_blank">
-        <img :src="$withBase('/img/dromara/xeasypdf-logo.png')" class="no-zoom" style="height:40px;width:170px;margin: 10px;">
+        <img :src="$withBase('/img/dromara/xeasypdf-logo.png')" class="no-zoom" style="height:40px;width:140px;margin: 10px;">
     </a>
 </span>
 <span style="width: 150px;text-align: left">
     <a href="https://gitee.com/dromara/image-combiner" target="_blank">
-        <img :src="$withBase('/img/dromara/imagecombiner-logo.png')" class="no-zoom" style="height:40px;width:170px;margin: 10px;">
+        <img :src="$withBase('/img/dromara/imagecombiner-logo.png')" class="no-zoom" style="height:40px;width:150px;margin: 10px;">
     </a>
 </span>
 <span style="width: 150px;text-align: left">
     <a href="https://gitee.com/dromara/dante-cloud" target="_blank">
-        <img :src="$withBase('/img/dromara/dantecloud-logo.png')" class="no-zoom" style="height:40px;width:170px;margin: 10px;">
+        <img :src="$withBase('/img/dromara/dantecloud-logo.png')" class="no-zoom" style="height:40px;width:150px;margin: 10px;">
+    </a>
+</span>
+<span style="width: 150px;text-align: left">
+    <a href="https://gitee.com/dromara/go-view" target="_blank">
+        <img :src="$withBase('/img/dromara/goview-logo.png')" class="no-zoom" style="height:40px;width:140px;margin: 10px;">
     </a>
 </span>
 
