@@ -109,7 +109,7 @@ TLog在2020年获得“Gitee最有价值开源项目“奖项（GVP）。
 ## 🐳Dromara组织成员
 <span style="width: 150px;text-align: left">
     <a href="https://gitee.com/dromara/TLog" target="_blank">
-        <img :src="$withBase('/img/dromara/tlog-logo.png')" class="no-zoom" style="height:40px;width:120px;margin: 10px;">
+        <img :src="$withBase('/img/dromara/tlog-logo.png')" class="no-zoom" style="height:40px;width:115px;margin: 10px;">
     </a>
 </span>
 <span style="width: 150px;text-align: left">
