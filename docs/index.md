@@ -74,7 +74,7 @@ postList: none
 <dependency>
     <groupId>com.yomahub</groupId>
     <artifactId>tlog-all-spring-boot-starter</artifactId>
-    <version>1.4.3</version>
+    <version>1.5.0</version>
 </dependency>
 ```
 
