@@ -21,7 +21,7 @@
 
 module.exports = {
   sidebarT: `
-    <a href="https://docs.eoapi.io/?utm_source=ZZ090402" target="_blank">
+    <a href="https://www.eoapi.io/?utm_source=sponsor&utm_campaign=s-Tlog" target="_blank">
       <img class="no-zoom" height="60" width="224" src="/img/donate/eoapi-banner.gif">
     </a>
   `,
