@@ -21,8 +21,8 @@
 
 module.exports = {
   sidebarT: `
-    <a href="https://postcat.com/zh/?utm_source=sponsor&utm_campaign=s-tlog" target="_blank">
-      <img class="no-zoom" height="60" width="224" src="/img/donate/eoapi-banner.gif">
+    <a href="https://datayi.cn/w/a9By33no" target="_blank">
+      <img class="no-zoom" height="60" width="224" src="/img/donate/postcat-banner.gif">
     </a>
   `,
   // 万维广告

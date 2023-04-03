@@ -25,11 +25,11 @@ postList: none
 
 ::: cardList
 ```yaml
-- name: Eoapi
+- name: PostCat
   desc: 开源 API 管理工具，接口文档、接口测试、Mock...
-  avatar: /img/donate/eoapi-logo.jpg
-  link: https://postcat.com/zh/?utm_source=sponsor&utm_campaign=s-tlog
-  bgColor: '#00785A'
+  avatar: /img/donate/postcat-logo.png
+  link: https://datayi.cn/w/a9By33no
+  bgColor: '#102863'
   textColor: '#FFFFFF'
 ```
 :::
