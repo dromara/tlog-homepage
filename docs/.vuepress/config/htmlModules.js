@@ -21,8 +21,8 @@
 
 module.exports = {
   sidebarT: `
-    <a href="https://datayi.cn/w/a9By33no" target="_blank">
-      <img class="no-zoom" height="60" width="224" src="/img/donate/postcat-banner.gif">
+    <a href="https://www.jnpfsoft.com/index.html?from=liteflow" target="_blank">
+      <img class="no-zoom" height="60" width="224" src="/img/donate/yinmai-banner.png">
     </a>
   `,
   // 万维广告
