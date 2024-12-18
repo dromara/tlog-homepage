@@ -26,11 +26,11 @@ jobs:
 
       # 3. 安装依赖
       - name: Install Dependencies
-        run: npm install
+        run: yarn install
 
       # 4. 构建项目
       - name: Build Project
-        run: npm run build
+        run: yarn build
 
       # 5. 构建结果 推送到 dist 分支
       - name: Deploy
