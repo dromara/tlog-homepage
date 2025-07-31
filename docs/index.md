@@ -169,8 +169,8 @@ TLog在2020年获得“Gitee最有价值开源项目“奖项（GVP）。
         </a>
     </span>
     <span class="link">
-        <a href="https://gitee.com/dromara/hertzbeat" target="_blank">
-            <img :src="$withBase('/img/dromara/hertzbeat-logo.png')" class="no-zoom" >
+        <a href="https://gitee.com/dromara/go-view" target="_blank">
+            <img :src="$withBase('/img/dromara/goview-logo.png')" class="no-zoom" >
         </a>
     </span>
     <span class="link">
@@ -250,11 +250,6 @@ TLog在2020年获得“Gitee最有价值开源项目“奖项（GVP）。
     <span class="link">
         <a href="https://gitee.com/dromara/dante-cloud" target="_blank">
             <img :src="$withBase('/img/dromara/dantecloud-logo.png')" class="no-zoom" >
-        </a>
-    </span>
-    <span class="link">
-        <a href="https://gitee.com/dromara/go-view" target="_blank">
-            <img :src="$withBase('/img/dromara/goview-logo.png')" class="no-zoom" >
         </a>
     </span>
 </div>
