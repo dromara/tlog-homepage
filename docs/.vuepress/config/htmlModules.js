@@ -21,14 +21,23 @@
 
 module.exports = {
   sidebarT: `
-    <a href="https://www.jnpfsoft.com/index.html?from=liteflow" target="_blank">
-      <img class="no-zoom" height="60" width="224" src="/img/donate/yinmai-banner.png">
+    <a href="https://easysearch.cn" target="_blank">
+      <img class="no-zoom" height="60" width="224" src="/img/donate/easySearch-banner-1.webp">
     </a>
   `,
   // 万维广告
   pageT: `
-  <div class="wwads-cn wwads-horizontal page-wwads" data-id="130"></div>
+  <div class="pin-adv">
+    <a href="https://easysearch.cn" target="_blank" rel="noopener noreferrer"><img style="width:90%;border-radius: 3px;" src="/img/donate/easySearch-banner-2.png"></a>
+  </div>
   <style>
+      .pin-adv{
+        width:100%!important;
+        min-height: 0;
+        margin: 0;
+        margin-top: 5px;
+        border-radius: 3px;
+      }
       .page-wwads{
         width:100%!important;
         min-height: 0;

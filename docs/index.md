@@ -25,19 +25,13 @@ postList: none
 
 ::: cardList
 ```yaml
-- name: Frsimple
-  desc: 一个纯净的中后台脚手架，无封装，支持springboot2.7.x和3.x双分支版本
-  avatar: /img/donate/frsimple.png
-  link: https://frsimple.cn/blogs/other/money.html
-  bgColor: '#102863'
-  textColor: '#FFFFFF'
-- name: JNPF低代码开发平台
-  desc: 技术双引擎系统，无限制业务场景，永久使用权，全源码交付
-  avatar: /img/donate/yinmai.png
-  link: https://www.jnpfsoft.com/index.html?from=liteflow
-  bgColor: '#aaccff'
-  textColor: '#000000'
-  expired: '2025-04-12'
+- name: Easysearch
+  desc: 企业级的分布式搜索型数据库
+  avatar: /img/donate/easySearch.png
+  link: https://easysearch.cn
+  bgColor: '#836EFF'
+  textColor: '#1F2221'
+  expired: '2027-03-22'
 ```
 :::
 
