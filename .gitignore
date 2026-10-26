@@ -1,5 +1,4 @@
 # npm
-package-lock.json
 node_modules
 yarn-error.log
 
@@ -18,3 +17,8 @@ urls.txt
 .DS_Store
 
 .idea
+
+# VitePress and local QA
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+.qa/
