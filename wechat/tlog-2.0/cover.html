@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>TLog 2.0 公众号封面</title>
+<style>
+  @font-face {
+    font-family: 'Inter Variable';
+    src: url('../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+    font-weight: 100 900;
+  }
+  @font-face {
+    font-family: 'JetBrains Mono Variable';
+    src: url('../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2');
+    font-weight: 100 800;
+  }
+  :root {
+    --bg: #05060b;
+    --c1: #0fae8c;
+    --c2: #3b7cf0;
+    --c3: #7a5af5;
+    --sans: 'Inter Variable', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+    --mono: 'JetBrains Mono Variable', 'SF Mono', Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); }
+
+  /* 主封面 2.35:1，按 2 倍尺寸绘制，导出 1800×766 */
+  .cover {
+    position: relative;
+    width: 1800px;
+    height: 766px;
+    overflow: hidden;
+    background:
+      radial-gradient(900px 520px at 78% 30%, #3b7cf026, transparent 70%),
+      radial-gradient(700px 480px at 92% 90%, #7a5af522, transparent 70%),
+      radial-gradient(600px 400px at 10% 100%, #0fae8c1c, transparent 70%),
+      var(--bg);
+    font-family: var(--sans);
+    color: #f4f6fb;
+  }
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(#ffffff08 1px, transparent 1px),
+      linear-gradient(90deg, #ffffff08 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 70% 50%, #000 20%, transparent 75%);
+  }
+
+  /* 背景里的日志：大部分是暗的，同一条 trace 的行被点亮 */
+  .logs {
+    position: absolute;
+    top: 70px; left: 930px;
+    width: 900px;
+    font-family: var(--mono);
+    font-size: 18px;
+    line-height: 37px;
+    white-space: pre;
+    color: #ffffff1f;
+    transform: rotate(-4deg);
+    transform-origin: left top;
+  }
+  .logs .hit { color: #dfe7ff; }
+  .logs .hit b { font-weight: 600; }
+  .logs .hit .sp { color: var(--c1); }
+  .logs .hit .tid {
+    background: linear-gradient(100deg, var(--c1), var(--c2) 55%, var(--c3));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  /* 把被点亮的行串起来的追踪线 */
+  .thread { position: absolute; inset: 0; }
+
+  .left-fade {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, var(--bg) 0%, var(--bg) 40%, #05060bb0 48%, transparent 60%);
+  }
+
+  .copy {
+    position: absolute;
+    left: 96px; top: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 18px;
+    font-size: 30px; font-weight: 600; letter-spacing: .02em;
+    color: #c9cfdf;
+  }
+  .brand img { width: 56px; height: 56px; }
+  .title {
+    margin-top: 26px;
+    font-size: 188px; line-height: .95; font-weight: 800;
+    letter-spacing: -.045em;
+  }
+  .title .v {
+    background: linear-gradient(100deg, var(--c1) 0%, var(--c2) 52%, var(--c3) 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub {
+    margin-top: 34px;
+    font-size: 40px; font-weight: 600; letter-spacing: .01em;
+    color: #eef1f8;
+  }
+  .tags {
+    margin-top: 30px;
+    display: flex; gap: 14px;
+  }
+  .tags span {
+    font-family: var(--mono);
+    font-size: 23px;
+    padding: 9px 20px;
+    border-radius: 999px;
+    border: 1.5px solid #ffffff24;
+    background: #ffffff0a;
+    color: #b7bfd4;
+  }
+
+  /* 1:1 分享图，导出 766×766 */
+  .square {
+    position: relative;
+    width: 766px; height: 766px;
+    overflow: hidden;
+    background:
+      radial-gradient(520px 420px at 80% 12%, #3b7cf030, transparent 70%),
+      radial-gradient(480px 420px at 10% 100%, #7a5af52a, transparent 70%),
+      var(--bg);
+    font-family: var(--sans);
+    color: #f4f6fb;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .square .grid { mask-image: radial-gradient(circle at 50% 50%, #000 15%, transparent 70%); }
+  .square img { width: 132px; height: 132px; position: relative; }
+  .square .title { margin-top: 30px; font-size: 150px; position: relative; }
+  .square .line {
+    position: relative;
+    margin-top: 36px;
+    font-family: var(--mono); font-size: 27px; color: #8e97ae;
+  }
+  .square .line .sp { color: var(--c1); }
+  .square .line .tid {
+    background: linear-gradient(100deg, var(--c1), var(--c2) 55%, var(--c3));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    font-weight: 600;
+  }
+
+  body[data-only="cover"] .square,
+  body[data-only="square"] .cover { display: none; }
+  body:not([data-only]) { display: flex; flex-direction: column; gap: 40px; padding: 40px; }
+</style>
+</head>
+<body>
+
+<section class="cover" id="cover">
+  <div class="grid"></div>
+  <div class="logs" id="logs"></div>
+  <svg class="thread" id="thread" viewBox="0 0 1800 766" aria-hidden="true">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#0fae8c"/>
+        <stop offset=".52" stop-color="#3b7cf0"/>
+        <stop offset="1" stop-color="#7a5af5"/>
+      </linearGradient>
+      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="6" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+  </svg>
+  <div class="left-fade"></div>
+  <div class="copy">
+    <div class="brand"><img src="../../docs/public/img/logo.svg" alt="">TLog</div>
+    <div class="title">TLog <span class="v">2.0</span></div>
+    <div class="sub">一个 starter，跑通 Spring Boot 2 / 3 / 4</div>
+    <div class="tags"><span>Kafka</span><span>RabbitMQ</span><span>@Async</span><span>WebFlux</span></div>
+  </div>
+</section>
+
+<section class="square" id="square">
+  <div class="grid"></div>
+  <img src="../../docs/public/img/logo.svg" alt="">
+  <div class="title">TLog <span class="v">2.0</span></div>
+  <div class="line"><span class="sp">&lt;0.1&gt;</span><span class="tid">&lt;7184204306423936&gt;</span> ok</div>
+</section>
+
+<script>
+  // 只有 hit 行属于同一条链路，其余是别的请求的噪声
+  const TID = '7184204306423936';
+  const rows = [
+    ['', '10:21:07.114 INFO  <0><7183650988911232> stock  - 扣减库存 sku=3021'],
+    ['hit', '0', 'order    - 收到下单请求 userId=1029'],
+    ['', '10:21:07.119 WARN  <0.2><7183650988911232> stock  - 库存不足，重试'],
+    ['', '10:21:07.121 INFO  <0><7184118835036288> user   - 查询会员等级'],
+    ['hit', '0.1', 'stock    - 锁定库存 sku=8812 qty=2'],
+    ['', '10:21:07.130 INFO  <0.1><7184118835036288> coupon - 无可用优惠券'],
+    ['', '10:21:07.133 INFO  <0><7183903377182848> gateway - GET /api/goods'],
+    ['hit', '0.2', 'coupon   - 核销优惠券 id=55120'],
+    ['', '10:21:07.140 INFO  <0.1><7183903377182848> goods  - 命中缓存'],
+    ['hit', '0.2.1', 'pay      - @Async 预创建支付单'],
+    ['', '10:21:07.151 ERROR <0><7184007621476416> notify - 短信通道超时'],
+    ['hit', '0.3', 'kafka    - 投递 order-created'],
+    ['', '10:21:07.163 INFO  <0.3><7183650988911232> stock  - 回滚完成'],
+    ['hit', '0', 'notify   - 消费消息，推送成功'],
+    ['', '10:21:07.172 INFO  <0><7184211109228544> user   - 登录成功'],
+    ['', '10:21:07.176 INFO  <0.1><7184211109228544> point  - 签到积分 +5'],
+  ];
+  const times = ['10:21:07.116', '10:21:07.124', '10:21:07.137', '10:21:07.145', '10:21:07.158', '10:21:07.169'];
+  let t = 0;
+  const logs = document.getElementById('logs');
+  logs.innerHTML = rows.map(r => {
+    if (r[0] !== 'hit') return `<div>${r[1].replace(/</g, '&lt;')}</div>`;
+    return `<div class="hit">${times[t++]} INFO  <span class="sp">&lt;${r[1]}&gt;</span><span class="tid">&lt;${TID}&gt;</span> <b>${r[2]}</b></div>`;
+  }).join('');
+
+  // 在 traceId 左侧画一条穿过所有命中行的曲线，再给每行加一个节点
+  function drawThread() {
+    const svg = document.getElementById('thread');
+    svg.querySelectorAll('path, circle').forEach(el => el.remove());
+    const box = document.getElementById('cover').getBoundingClientRect();
+    const pts = [...logs.querySelectorAll('.hit .sp')].map(el => {
+      const r = el.getBoundingClientRect();
+      return [r.left - box.left - 22, r.top - box.top + r.height / 2];
+    });
+    let d = `M ${pts[0][0] - 40} ${pts[0][1] - 90} L ${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+      const dx = (i % 2 ? -70 : 70);
+      d += ` C ${x0 + dx} ${y0 + (y1 - y0) * .4}, ${x1 + dx} ${y1 - (y1 - y0) * .4}, ${x1} ${y1}`;
+    }
+    const last = pts[pts.length - 1];
+    d += ` L ${last[0] + 30} ${last[1] + 120}`;
+    const ns = 'http://www.w3.org/2000/svg';
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'url(#g)');
+    path.setAttribute('stroke-width', '4');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('filter', 'url(#glow)');
+    svg.appendChild(path);
+    pts.forEach(([x, y]) => {
+      const c = document.createElementNS(ns, 'circle');
+      c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 8);
+      c.setAttribute('fill', '#05060b'); c.setAttribute('stroke', 'url(#g)'); c.setAttribute('stroke-width', 4);
+      svg.appendChild(c);
+    });
+    document.body.dataset.ready = '1';
+  }
+  // 先同步画一次，字体加载完位置会变，再重画
+  drawThread();
+  document.fonts.ready.then(drawThread);
+
+  const only = new URLSearchParams(location.search).get('only');
+  if (only) document.body.dataset.only = only;
+</script>
+</body>
+</html>

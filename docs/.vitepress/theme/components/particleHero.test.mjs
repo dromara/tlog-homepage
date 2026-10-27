@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { SHOCK_EVERY, SHOCK_FIRST, TRAIL, createParticleHero, decayTrail, glyphArea, makeRandom, particleBudget, sampleGlyphs, shockAge } from './particleHero.js'
+import { SHOCK_EVERY, SHOCK_FIRST, TRAIL, UNIFORMS, createParticleHero, decayTrail, glyphArea, makeRandom, particleBudget, sampleGlyphs, shockAge, topologyShare, topologyTargets } from './particleHero.js'
+import { HALO_RADIUS, NODE_RADIUS, ROLE, VIEW, chainTone, cubicPoint, decodeRole, edgePath, edges, nodes, pairByX, sampleTopology } from './traceTopology.js'
 
 // Run with: node --test docs/.vitepress/theme/components/particleHero.test.mjs
 // A 10×4 RGBA image whose left half (x < 5) is opaque.
@@ -61,6 +62,70 @@ test('shockwaves fire after assembly and repeat', () => {
   assert.ok(shockAge(SHOCK_FIRST + SHOCK_EVERY + 0.2) > 0)
 })
 
+test('edge paths are the cubic curves the particles are sampled from', () => {
+  for (const edge of edges) {
+    const [a, b, c, d] = edge.points
+    const r = n => Math.round(n * 100) / 100
+    assert.equal(edgePath(edge), `M${r(a[0])} ${r(a[1])} C ${r(b[0])} ${r(b[1])}, ${r(c[0])} ${r(c[1])}, ${r(d[0])} ${r(d[1])}`)
+    assert.deepEqual(cubicPoint(edge.points, 0), a)
+    assert.deepEqual(cubicPoint(edge.points, 1), d)
+  }
+  assert.equal(edgePath(edges[1]), 'M130 214 C 185.33 214, 240.67 214, 296 214')
+})
+
+test('topology points land on an edge, a node ring or a node halo', () => {
+  const points = sampleTopology(4000, makeRandom(5))
+  const roles = [0, 0, 0]
+  for (let i = 0; i < points.length; i += 4) {
+    const x = points[i] * VIEW.w, y = points[i + 1] * VIEW.h
+    const { role, node } = decodeRole(points[i + 3])
+    roles[role]++
+    assert.ok(Math.abs(points[i + 2] - chainTone(x)) < 1e-6, 'tone follows the call chain')
+    if (role === ROLE.edge) {
+      assert.equal(node, -1)
+      let best = Infinity
+      for (const edge of edges) for (let u = 0; u <= 1; u += 1 / 400) {
+        const [px, py] = cubicPoint(edge.points, u)
+        best = Math.min(best, Math.hypot(px - x, py - y))
+      }
+      assert.ok(best < 3.2, `edge point ${best.toFixed(2)}px from its curve`)
+    } else {
+      const radius = Math.hypot(x - nodes[node].x, y - nodes[node].y)
+      const expected = role === ROLE.ring ? NODE_RADIUS : HALO_RADIUS
+      assert.ok(Math.abs(radius - expected) < 2, `${role === ROLE.ring ? 'ring' : 'halo'} radius ${radius.toFixed(2)}`)
+    }
+  }
+  for (const count of roles) assert.ok(count > 300, 'every role is represented')
+})
+
+test('pairing keeps horizontal order: left letters become the caller side', () => {
+  const xs = [0.9, 0.1, 0.5, 0.3]
+  const topology = new Float32Array([0.2, 0, 0, 0, 0.8, 0, 0, 1, 0.6, 0, 0, 2, 0.4, 0, 0, 0])
+  const paired = pairByX(xs, topology)
+  assert.deepEqual(Array.from({ length: 4 }, (_, i) => Math.round(paired[i * 4] * 10) / 10), [0.8, 0.2, 0.6, 0.4])
+})
+
+test('a bounded, evenly spread share of the wordmark joins the topology; the rest dissolves', () => {
+  assert.equal(topologyShare(0), 0)
+  assert.equal(topologyShare(2000), 2000)
+  assert.equal(topologyShare(20000), 6000)
+  assert.equal(topologyShare(46000), 9000)
+  const random = makeRandom(2)
+  const count = 20000, glyphs = new Float32Array(count * 3)
+  for (let i = 0; i < count; i++) { glyphs[i * 3] = random(); glyphs[i * 3 + 1] = random(); glyphs[i * 3 + 2] = -1 }
+  const targets = topologyTargets(glyphs, count, 11)
+  assert.deepEqual(targets, topologyTargets(glyphs, count, 11), 'deterministic for a seed')
+  let joined = 0, leftLetters = 0, leftTargets = 0
+  for (let i = 0; i < count; i++) {
+    if (targets[i * 4 + 3] === ROLE.dissolve) continue
+    joined++
+    if (glyphs[i * 3] < 0.25) { leftLetters++; if (targets[i * 4] < 0.5) leftTargets++ }
+  }
+  assert.equal(joined, topologyShare(count))
+  assert.ok(leftLetters > joined * 0.2 && leftLetters < joined * 0.3, 'the share is spread across the letters')
+  assert.equal(leftTargets, leftLetters, 'the leftmost letters all go to the caller side')
+})
+
 test('no WebGL means no hero, so the DOM wordmark stays', () => {
   assert.equal(createParticleHero({ getContext: () => null }, { measure() {} }), null)
 })
@@ -116,16 +181,20 @@ function fakeGL(failures) {
       return buffer
     },
     deleteBuffer(buffer) { deleted.buffers.push(buffer) },
-    getAttribLocation(program, name) { return { aSeed: 0, aText: 1, aMeta: 2 }[name] },
+    getAttribLocation(program, name) { return { aSeed: 0, aText: 1, aMeta: 2, aTopo: 3 }[name] },
     getUniformLocation(program, name) {
       gl.uniformRequests.push({ program, name })
       return { program, name }
     },
     bindBuffer() {},
-    bufferData() { gl.bufferUploads++ },
+    bufferData(target, data) { gl.bufferUploads++; gl.lastUpload = data },
     enableVertexAttribArray() {}, vertexAttribPointer() {}, viewport() {},
     clearColor() {}, clear() {}, enable() {}, blendFunc() {},
-    uniform2f() {}, uniform4f() {}, uniform1f() {}, uniform3fv() {},
+    uniforms: {},
+    uniform2f(location, ...values) { gl.uniforms[location.name] = values },
+    uniform4f(location, ...values) { gl.uniforms[location.name] = values },
+    uniform1f(location, value) { gl.uniforms[location.name] = value },
+    uniform3fv(location, value) { gl.uniforms[location.name] = value },
     drawArrays() { gl.draws++ },
   }
   return gl
@@ -221,11 +290,14 @@ function webglHarness(t, { coarse = false } = {}) {
   globalThis.removeEventListener = events.removeEventListener
   globalThis.matchMedia = query => ({ matches: coarse && query === '(pointer: coarse)' })
 
-  const measure = () => ({
+  const boxes = {
     text: { x: 0, y: 0, w: 80, h: 20, font: '650 {size} sans-serif' },
     quiet: { x: 0, y: 30, w: 100, h: 10 },
-  })
+    topology: null,
+  }
+  const measure = () => ({ ...boxes })
   return {
+    boxes,
     gl, failures, events, doc, canvas, raf, resizes, views,
     create(overrides = {}) {
       return createParticleHero(canvas, { measure, dark: true, reduced: false, seed: 1, ...overrides })
@@ -282,7 +354,7 @@ test('context loss stops drawing and restoration rebuilds every WebGL resource',
   h.canvas.dispatch('webglcontextrestored')
   assert.equal(h.gl.created.programs.length, before.programs + 1)
   assert.equal(h.gl.created.buffers.length, before.buffers + 1)
-  assert.equal(h.gl.uniformRequests.length, before.uniforms + 16)
+  assert.equal(h.gl.uniformRequests.length, before.uniforms + UNIFORMS.length)
   assert.equal(h.gl.bufferUploads, before.uploads + 1)
   assert.equal(h.gl.draws, before.draws + 1)
   assert.deepEqual(changes, [false, true])
@@ -413,4 +485,50 @@ test('destroy cancels pending work, detaches listeners and releases resources on
   assert.deepEqual([h.gl.deleted.buffers.length, h.gl.deleted.programs.length, h.gl.deleted.shaders.length], deleted)
   await new Promise(resolve => setTimeout(resolve, 140))
   assert.equal(h.canvas.rectCalls, rectCalls, 'the pending resize was cancelled')
+})
+
+test('without a topology every wordmark particle dissolves on morph', t => {
+  const h = webglHarness(t)
+  const hero = h.create()
+  const data = h.gl.lastUpload
+  for (let i = 0; i < data.length; i += 12) if (data[i + 6] === 0) assert.equal(data[i + 11], ROLE.dissolve)
+  hero.destroy()
+})
+
+test('morph targets the measured topology box and tracks it without re-uploading', t => {
+  const h = webglHarness(t)
+  h.boxes.topology = { x: 10, y: 400, w: 62, h: 43 }
+  const hero = h.create()
+  const uploads = h.gl.bufferUploads
+  const data = h.gl.lastUpload
+  let joined = 0
+  for (let i = 0; i < data.length; i += 12) if (data[i + 6] === 0 && data[i + 11] !== ROLE.dissolve) joined++
+  assert.ok(joined > 0, 'some letters join the topology')
+  hero.setMorph(2)
+  h.boxes.topology = { x: 10, y: 120, w: 62, h: 43 }
+  hero.track()
+  h.raf.flush(0)
+  assert.equal(h.gl.uniforms.uMorph, 1, 'morph is clamped')
+  assert.deepEqual(h.gl.uniforms.uTopo, [10, 120, 62, 43])
+  assert.equal(h.gl.uniforms.uShock, -1, 'no shockwave while morphing')
+  assert.equal(h.gl.bufferUploads, uploads)
+  hero.setOptions({ reduced: true })
+  assert.equal(h.gl.uniforms.uMorph, 0, 'reduced motion never morphs')
+  hero.destroy()
+})
+
+test('parking stops drawing until the hero is needed again', t => {
+  const h = webglHarness(t)
+  const hero = h.create()
+  assert.equal(h.raf.size, 1)
+  hero.setParked(true)
+  assert.equal(h.raf.size, 0)
+  h.canvas.rectCalls = 0
+  h.events.dispatch('pointermove', { pointerType: 'mouse', clientX: 20, clientY: 20 })
+  assert.equal(h.canvas.rectCalls, 0, 'a parked hero ignores the pointer')
+  h.views[0].intersect(true)
+  assert.equal(h.raf.size, 0, 'entering the viewport does not unpark')
+  hero.setParked(false)
+  assert.equal(h.raf.size, 1)
+  hero.destroy()
 })

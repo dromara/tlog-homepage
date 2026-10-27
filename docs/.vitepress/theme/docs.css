@@ -63,8 +63,11 @@
 /* Sidebar and outline */
 .VPSidebar { background: var(--tl-bg) !important; border-right: 1px solid var(--tl-line); scrollbar-width: thin; }
 .VPSidebar .group { border-top: none !important; padding-top: 14px !important; }
-.VPSidebarItem.level-0 > .item .text { font-size: 11.5px; font-weight: 600 !important; color: var(--tl-faint); letter-spacing: .1em; }
-.VPSidebarItem.level-1 .text, .VPSidebarItem.level-2 .text { font-size: 13.5px; line-height: 1.6; padding-block: 5px; color: var(--tl-muted); transition: color .2s; }
+/* The sidebar reads in the same face and rhythm as the article body: no wide
+   tracking or tiny caps-style group labels, which look broken on Chinese text. */
+.VPSidebar .text { font-family: var(--tl-display); letter-spacing: .01em; font-feature-settings: 'cv11', 'ss01'; }
+.VPSidebarItem.level-0 > .item .text { font-size: 14.5px; line-height: 1.6; font-weight: 650 !important; color: var(--tl-text); }
+.VPSidebarItem.level-1 .text, .VPSidebarItem.level-2 .text { font-size: 14px; line-height: 1.65; font-weight: 400; padding-block: 5px; color: var(--tl-muted); transition: color .2s; }
 .VPSidebarItem .item:hover .text { color: var(--tl-text); }
 .VPSidebarItem.is-active > .item .text { color: var(--tl-text); font-weight: 600; }
 .VPSidebarItem.is-active > .item .indicator { background: var(--tl-gradient); width: 2px; border-radius: 2px; }

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { TRACE_ID, edgePath, edges as topologyEdges, nodes } from './traceTopology.js'
+import { COMPACT_QUERY, HANDOFF_STEP, morphState, morphTargets } from './heroMorph'
 
 // One request, animated on desktop and fully readable on compact or reduced-motion
 // layouts. The caller keeps span 0; outbound calls hand child spans downstream.
@@ -12,23 +14,10 @@ const steps = [
   { title: '发出消息', text: 'KafkaTemplate 把 TraceId 写进消息 header，通知服务在 @KafkaListener 里拿到子 span 0.3。', edge: 4 },
   { title: '一次搜索，全部找回', text: '在任何日志平台里搜索这个 TraceId，整条链路按调用顺序排好。', edge: 5 },
 ]
-const nodes = [
-  { id: 'order', label: 'order-service', x: 96, y: 214, span: '0' },
-  { id: 'inventory', label: 'inventory', x: 330, y: 84, span: '0.1' },
-  { id: 'payment', label: 'payment', x: 330, y: 214, span: '0.2' },
-  { id: 'risk', label: 'risk-engine', x: 540, y: 214, span: '0.2.1' },
-  { id: 'async', label: 'async-1', x: 330, y: 352, span: '0' },
-  { id: 'notify', label: 'notification', x: 540, y: 352, span: '0.3' },
-]
+// Nodes and edges are shared with the hero particles, which settle into this diagram.
 // Edge i lights node i + 1; the async thread publishes the Kafka message.
-const edges = [
-  { d: 'M126 200 C 210 120, 240 90, 296 86', to: 1 },
-  { d: 'M130 214 L 296 214', to: 2 },
-  { d: 'M364 214 L 506 214', to: 3 },
-  { d: 'M126 230 C 210 320, 240 350, 296 352', to: 4, async: true },
-  { d: 'M364 352 L 506 352', to: 5, label: 'Kafka' },
-]
-const id = '7302518846211904'
+const edges = topologyEdges.map(edge => ({ ...edge, d: edgePath(edge) }))
+const id = TRACE_ID
 const logs = [
   { step: 0, time: '10:21:07.114', span: '0', service: 'order-service', message: '收到下单请求 POST /orders' },
   { step: 1, time: '10:21:07.131', span: '0.1', service: 'inventory', message: '扣减库存 sku=8812 qty=1' },
@@ -40,6 +29,7 @@ const logs = [
 ]
 
 const root = ref<HTMLElement | null>(null)
+const topology = ref<SVGSVGElement | null>(null)
 const progress = ref(0)
 const reduced = ref(false)
 const compact = ref(false)
@@ -54,12 +44,15 @@ function measure() {
   frame = 0
   const el = root.value
   if (!el) return
-  if (staticMode.value) { progress.value = steps.length; return }
+  if (staticMode.value) { progress.value = steps.length; morphState.handoff = 0; return }
   const rect = el.getBoundingClientRect()
   const travel = Math.max(1, rect.height - window.innerHeight)
   progress.value = Math.min(1, Math.max(0, -rect.top / travel)) * steps.length
+  morphState.handoff = Math.min(1, progress.value / HANDOFF_STEP)
 }
-const onScroll = () => { if (!staticMode.value && !frame) frame = requestAnimationFrame(measure) }
+// While the hero particles stand in for the diagram, the SVG fades in over them.
+const handoff = computed(() => morphState.active && !staticMode.value ? { opacity: morphState.handoff } : undefined)
+const onScroll = () => { if (!frame) frame = requestAnimationFrame(measure) }
 
 const active = computed(() => Math.min(steps.length - 1, Math.floor(progress.value)))
 const within = computed(() => Math.min(1, Math.max(0, (progress.value - active.value) * 1.6)))
@@ -81,7 +74,9 @@ const onPreferences = () => {
 
 onMounted(() => {
   motion = window.matchMedia('(prefers-reduced-motion: reduce)')
-  compactMedia = window.matchMedia('(max-width: 1100px), (max-height: 700px)')
+  morphTargets.journey = root.value
+  morphTargets.topology = topology.value
+  compactMedia = window.matchMedia(COMPACT_QUERY)
   onPreferences()
   motion.addEventListener('change', onPreferences)
   compactMedia.addEventListener('change', onPreferences)
@@ -89,6 +84,8 @@ onMounted(() => {
   window.addEventListener('resize', onScroll)
 })
 onBeforeUnmount(() => {
+  morphTargets.journey = null
+  morphTargets.topology = null
   cancelAnimationFrame(frame)
   motion?.removeEventListener('change', onPreferences)
   compactMedia?.removeEventListener('change', onPreferences)
@@ -112,7 +109,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="journey-visual">
-        <svg class="topology" viewBox="0 0 620 430" role="img" aria-label="一次请求依次经过订单、库存、支付、风控服务和异步线程，再经 Kafka 消息到达通知服务">
+        <svg ref="topology" class="topology" :style="handoff" viewBox="0 0 620 430" role="img" aria-label="一次请求依次经过订单、库存、支付、风控服务和异步线程，再经 Kafka 消息到达通知服务">
           <defs>
             <!-- userSpaceOnUse: with the default bounding-box units, a perfectly
                  horizontal path has a zero-height box and its stroke vanishes. -->

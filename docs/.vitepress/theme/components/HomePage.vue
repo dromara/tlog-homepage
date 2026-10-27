@@ -55,9 +55,9 @@ onBeforeUnmount(() => { observer?.disconnect(); media?.removeEventListener('chan
   <main ref="root" class="tlog-home">
     <HeroStage />
 
-    <IntegrationPlayground />
-
     <TraceJourney />
+
+    <IntegrationPlayground />
 
     <section class="bento-section tl-container" data-reveal>
       <div class="section-heading" id="ecosystem">

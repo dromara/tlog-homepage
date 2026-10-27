@@ -34,7 +34,7 @@ npm run preview # 预览生产构建
 
 ## 视觉与交互
 
-首页采用墨黑 / 雾白底色与一条“薄荷 → 天蓝 → 紫罗兰”的渐变线索。首屏由数万个粒子从星云中汇聚成 “TLog 2.0” 字标，一条追踪光带穿过字标流动，周期性冲击波向外扩散；鼠标划过会拨开粒子，向下滚动时粒子向四周爆散。`theme/tokens.css` 集中维护颜色、字体和间距；`theme/base.css`、`theme/home.css`、`theme/docs.css` 分别负责全局元素、首页和文档页。字体为自托管的 Inter（拉丁与数字）与 JetBrains Mono（代码），中文使用各平台系统字体。
+首页采用墨黑 / 雾白底色与一条“薄荷 → 天蓝 → 紫罗兰”的渐变线索。首屏由数万个粒子从星云中汇聚成 “TLog 2.0” 字标，一条追踪光带穿过字标流动，周期性冲击波向外扩散；鼠标划过会拨开粒子。桌面端向下滚动时，字标粒子会飞向下方链路演示，汇聚成同一张拓扑图（节点与连线定义在 `traceTopology.js`，首屏和链路共用），随后交给 SVG 接管；触屏、窄屏、矮屏和减少动态效果时，粒子仍按原方式向四周爆散。`theme/tokens.css` 集中维护颜色、字体和间距；`theme/base.css`、`theme/home.css`、`theme/docs.css` 分别负责全局元素、首页和文档页。字体为自托管的 Inter（拉丁与数字）与 JetBrains Mono（代码），中文使用各平台系统字体。
 
 `HeroStage.vue` / `particleHero.js` 用 WebGL 绘制首屏：粒子位置全部在顶点着色器中计算，每帧 CPU 只更新少量 uniform；粒子数量按屏幕大小自适应，离开视口或页面进入后台时停止绘制。没有 WebGL 时显示普通的 DOM 字标；系统开启“减少动态效果”时显示静止的字标。`EvolutionSection.vue` 是 2.0 的升级 diff 回放、数字与集成列表。`TraceJourney.vue` 是随滚动推进的链路演示，SpanId 规则与文档一致。`InstallSnippet.vue` 提供可复制的安装片段。字体自托管，不依赖外部字体服务。
 

@@ -2,6 +2,10 @@
 // into the TLog 2.0 wordmark, and a trace thread streams through it. Every
 // position is computed in the vertex shader from per-particle seeds, so a frame
 // costs the CPU only a dozen uniforms, however many particles there are.
+// Scrolling on desktop morphs the letters into the request topology that the
+// scroll journey then draws in SVG, at the same place on screen.
+
+import { ROLE, pairByX, sampleTopology } from './traceTopology.js'
 
 export const clamp = (value, low = 0, high = 1) => Math.min(high, Math.max(low, value))
 const easeOut = t => 1 - Math.pow(1 - t, 3)
@@ -61,6 +65,15 @@ export function decayTrail(trail, dt) {
   return trail
 }
 
+// How many wordmark particles become the topology; the rest dissolve.
+export function topologyShare(textCount) {
+  if (!textCount) return 0
+  return Math.min(textCount, Math.round(clamp(textCount * 0.3, 3000, 9000)))
+}
+
+export const UNIFORMS = ['uRes', 'uRect', 'uQuiet', 'uTopo', 'uTime', 'uAssemble', 'uScatter', 'uMorph', 'uDpr', 'uShock', 'uDark', 'uTilt', 'uTrail', 'uC1', 'uC2', 'uC3', 'uInk', 'uDust']
+const STRIDE = 12
+
 export function shockAge(time) {
   if (time < SHOCK_FIRST) return -1
   const age = (time - SHOCK_FIRST) % SHOCK_EVERY
@@ -72,10 +85,12 @@ precision highp float;
 attribute vec4 aSeed;
 attribute vec2 aText;
 attribute vec2 aMeta;
+attribute vec4 aTopo;
 uniform vec2 uRes;
 uniform vec4 uRect;
 uniform vec4 uQuiet;
-uniform float uTime, uAssemble, uScatter, uDpr, uShock, uDark;
+uniform vec4 uTopo;
+uniform float uTime, uAssemble, uScatter, uMorph, uDpr, uShock, uDark;
 uniform vec2 uTilt;
 uniform vec3 uTrail[${TRAIL}];
 uniform vec3 uC1, uC2, uC3, uInk, uDust;
@@ -144,6 +159,41 @@ void main() {
     glow = smoothstep(0.07, 0.0, abs(aText.x - sweep - (aText.y - 0.5) * 0.15)) * k;
     alpha = mix(0.5, 0.55 + 0.37 * (1.0 - uDark), k);
     size = 1.85 + s.z * 0.5;
+
+    if (uMorph > 0.0) {
+      // aTopo: target in the topology box (0…1), chain tone, role + 10 × (node index + 1).
+      float role = mod(aTopo.w, 10.0);
+      float node = floor(aTopo.w / 10.0);
+      if (role > 2.5) {
+        // Surplus letters dissolve towards the camera.
+        float d = clamp(uMorph * 2.2 - s.w * 0.6, 0.0, 1.0);
+        vec2 away = normalize(p.xy - (uRect.xy + uRect.zw * 0.5) + (s.xy - 0.5) * 30.0);
+        p.xy += away * d * d * (120.0 + s.y * 380.0);
+        p.z -= d * d * (200.0 + s.x * 500.0);
+        alpha *= 1.0 - d;
+        glow *= 1.0 - d;
+      } else {
+        // Left letters reach the caller first, so the call chain forms left to right.
+        float m = clamp(uMorph * 1.6 - aTopo.x * 0.45 - s.w * 0.15, 0.0, 1.0);
+        m = m * m * (3.0 - 2.0 * m);
+        vec3 dest = vec3(uTopo.x + aTopo.x * uTopo.z, uTopo.y + aTopo.y * uTopo.w, 0.0);
+        float arc = sin(m * 3.14159);
+        p = mix(p, dest, m);
+        p.y += arc * (s.y - 0.5) * 140.0;
+        p.z -= arc * (180.0 + 260.0 * s.z);
+        // A pulse runs down the chain while it forms; at rest only the caller stays lit,
+        // matching the journey's first frame.
+        float settle = smoothstep(0.8, 1.0, uMorph);
+        float caller = node > 0.5 && node < 1.5 ? 1.0 : 0.0;
+        float flow = exp(-pow((aTopo.z - fract(t * 0.32)) * 7.0, 2.0)) * (1.0 - settle);
+        float rest = role < 0.5 ? 0.62 : role < 1.5 ? 0.9 : 0.32;
+        rest *= mix(1.0, mix(0.34, 1.15, caller), settle);
+        color = mix(color, grad(aTopo.z), m);
+        alpha = mix(alpha, rest, m);
+        size = mix(size, role < 0.5 ? 1.5 : role < 1.5 ? 1.9 : 1.2, m);
+        glow = mix(glow, flow * 0.9 + caller * settle * 0.25, m);
+      }
+    }
   } else if (kind < 1.5) {
     float u;
     vec3 target = thread(s, t, u);
@@ -155,10 +205,13 @@ void main() {
     color = grad(u);
     float core = 1.0 - s.w;
     alpha = (0.28 + 0.62 * core * core) * mix(0.6, 1.0, k);
+    alpha *= 1.0 - 0.85 * smoothstep(0.0, 0.6, uMorph);
+    glow *= 1.0 - uMorph;
     size = mix(1.2, 2.7, core * core);
   } else {
     color = mix(uDust, grad(s.x), 0.35);
     alpha = (0.18 + 0.4 * s.y) * (0.65 + 0.35 * sin(t * 2.0 + s.x * 60.0));
+    alpha *= 1.0 - 0.45 * uMorph;
     size = 0.9 + s.z * 1.7;
   }
 
@@ -200,7 +253,7 @@ void main() {
   if (kind > 0.5) {
     vec2 q = abs(sp - (uQuiet.xy + uQuiet.zw * 0.5)) - uQuiet.zw * 0.5;
     float inside = 1.0 - smoothstep(0.0, 60.0, max(q.x, q.y));
-    alpha *= 1.0 - inside * 0.78;
+    alpha *= 1.0 - inside * 0.78 * (1.0 - uMorph);
   }
 
   color = mix(color, uDark > 0.5 ? vec3(1.0) : uC2, clamp(glow, 0.0, 1.0) * 0.75);
@@ -208,6 +261,12 @@ void main() {
 
   vColor = color;
   vAlpha = alpha;
+  // Fully faded particles skip rasterisation.
+  if (alpha < 0.004) {
+    gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+    gl_PointSize = 0.0;
+    return;
+  }
   vec2 clip = sp / uRes * 2.0 - 1.0;
   gl_Position = vec4(clip.x, -clip.y, 0.0, 1.0);
   gl_PointSize = clamp(size * persp * uDpr * (1.0 + glow * 0.5), 0.5, 14.0);
@@ -285,9 +344,9 @@ function createGLResources(gl) {
     }
     const attr = name => gl.getAttribLocation(resources.program, name)
     const uni = {}
-    for (const name of ['uRes', 'uRect', 'uQuiet', 'uTime', 'uAssemble', 'uScatter', 'uDpr', 'uShock', 'uDark', 'uTilt', 'uTrail', 'uC1', 'uC2', 'uC3', 'uInk', 'uDust']) uni[name] = gl.getUniformLocation(resources.program, name)
+    for (const name of UNIFORMS) uni[name] = gl.getUniformLocation(resources.program, name)
     resources.uni = uni
-    resources.locations = { seed: attr('aSeed'), text: attr('aText'), meta: attr('aMeta') }
+    resources.locations = { seed: attr('aSeed'), text: attr('aText'), meta: attr('aMeta'), topo: attr('aTopo') }
     return resources
   } catch {
     releaseGLResources(gl, resources)
@@ -295,10 +354,27 @@ function createGLResources(gl) {
   }
 }
 
+// Pick a spatially even share of the wordmark particles and pair each with a
+// topology point of matching horizontal order. Returns aTopo quadruples per glyph.
+export function topologyTargets(glyphs, textCount, seed) {
+  const random = makeRandom(seed ^ 0x5bd1e995)
+  const share = topologyShare(textCount)
+  const out = new Float32Array(textCount * 4)
+  for (let i = 0; i < textCount; i++) out[i * 4 + 3] = ROLE.dissolve
+  if (!share) return out
+  const joined = []
+  for (let i = 0; i < textCount && joined.length < share; i++) {
+    if (random() * (textCount - i) < share - joined.length) joined.push(i)
+  }
+  const paired = pairByX(joined.map(i => glyphs[i * 3]), sampleTopology(joined.length, random))
+  joined.forEach((glyph, k) => out.set(paired.subarray(k * 4, k * 4 + 4), glyph * 4))
+  return out
+}
+
 /**
  * @param {HTMLCanvasElement} canvas
- * @param {{ measure: () => { text: {x:number,y:number,w:number,h:number,font:string}, quiet: {x:number,y:number,w:number,h:number} }, dark?: boolean, reduced?: boolean, seed?: number, onAvailabilityChange?: (available: boolean) => void }} options
- * @returns {null | { setOptions(o: {dark?: boolean, reduced?: boolean}): void, setScatter(v: number): void, rebuild(): boolean, destroy(): void }}
+ * @param {{ measure: () => { text: {x:number,y:number,w:number,h:number,font:string}, quiet: {x:number,y:number,w:number,h:number}, topology?: {x:number,y:number,w:number,h:number} | null }, dark?: boolean, reduced?: boolean, seed?: number, onAvailabilityChange?: (available: boolean) => void }} options
+ * @returns {null | { setOptions(o: {dark?: boolean, reduced?: boolean}): void, setScatter(v: number): void, setMorph(v: number): void, rebuild(): boolean, destroy(): void }}
  */
 export function createParticleHero(canvas, options) {
   const gl = canvas.getContext && (canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: true, powerPreference: 'high-performance' }))
@@ -309,9 +385,9 @@ export function createParticleHero(canvas, options) {
   let dark = options.dark ?? true
   let reduced = !!options.reduced
   let W = 1, H = 1, dpr = 1, count = 0
-  let rect = [0, 0, 1, 1], quiet = [0, 0, 0, 0]
+  let rect = [0, 0, 1, 1], quiet = [0, 0, 0, 0], topo = [0, 0, 1, 1], morph = 0
   let time = 0, last = null, lastDraw = null, frameElapsed = 0, frame = null
-  let pageVisible = !document.hidden, inViewport = true, destroyed = false, lost = false, available = true, scatter = 0
+  let pageVisible = !document.hidden, inViewport = true, parked = false, destroyed = false, lost = false, available = true, scatter = 0
   const coarse = globalThis.matchMedia && globalThis.matchMedia('(pointer: coarse)').matches
   const frameInterval = 1000 / (coarse ? 30 : 60)
   const trail = new Float32Array(TRAIL * 3)
@@ -335,9 +411,7 @@ export function createParticleHero(canvas, options) {
       canvas.height = Math.round(H * dpr)
       gl.viewport(0, 0, canvas.width, canvas.height)
 
-      const { text, quiet: q } = options.measure()
-      rect = [text.x, text.y, Math.max(1, text.w), Math.max(1, text.h)]
-      quiet = [q.x, q.y, q.w, q.h]
+      const { text, topology } = place()
 
       // Rasterise the wordmark at its on-screen size and scatter seeds inside the glyphs.
       const tw = Math.ceil(rect[2]), th = Math.ceil(rect[3])
@@ -365,30 +439,47 @@ export function createParticleHero(canvas, options) {
       const budget = particleBudget(W, H, glyphArea(pixels))
       const glyphs = sampleGlyphs(pixels, tw, th, budget.text, random, { start: x0 + lead, end: x0 + full })
       const textCount = glyphs.length / 3
+      const targets = topology ? topologyTargets(glyphs, textCount, options.seed ?? 20201022) : null
       count = budget.dust + budget.thread + textCount
-      const data = new Float32Array(count * 8)
+      const data = new Float32Array(count * STRIDE)
       let o = 0
-      const push = (kind, tx, ty, tone) => {
+      const push = (kind, tx, ty, tone, target, index) => {
         data[o++] = random(); data[o++] = random(); data[o++] = random(); data[o++] = random()
         data[o++] = tx; data[o++] = ty; data[o++] = kind; data[o++] = tone
+        if (target) data.set(target.subarray(index * 4, index * 4 + 4), o)
+        else data[o + 3] = ROLE.dissolve
+        o += 4
       }
       for (let i = 0; i < budget.dust; i++) push(2, 0, 0, 0)
       for (let i = 0; i < budget.thread; i++) push(1, 0, 0, 0)
-      for (let i = 0; i < textCount; i++) push(0, glyphs[i * 3], glyphs[i * 3 + 1], glyphs[i * 3 + 2])
+      for (let i = 0; i < textCount; i++) push(0, glyphs[i * 3], glyphs[i * 3 + 1], glyphs[i * 3 + 2], targets, i)
 
+      const bytes = STRIDE * 4
       gl.bindBuffer(gl.ARRAY_BUFFER, resources.buffer)
       gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
       gl.enableVertexAttribArray(resources.locations.seed)
-      gl.vertexAttribPointer(resources.locations.seed, 4, gl.FLOAT, false, 32, 0)
+      gl.vertexAttribPointer(resources.locations.seed, 4, gl.FLOAT, false, bytes, 0)
       gl.enableVertexAttribArray(resources.locations.text)
-      gl.vertexAttribPointer(resources.locations.text, 2, gl.FLOAT, false, 32, 16)
+      gl.vertexAttribPointer(resources.locations.text, 2, gl.FLOAT, false, bytes, 16)
       gl.enableVertexAttribArray(resources.locations.meta)
-      gl.vertexAttribPointer(resources.locations.meta, 2, gl.FLOAT, false, 32, 24)
+      gl.vertexAttribPointer(resources.locations.meta, 2, gl.FLOAT, false, bytes, 24)
+      gl.enableVertexAttribArray(resources.locations.topo)
+      gl.vertexAttribPointer(resources.locations.topo, 4, gl.FLOAT, false, bytes, 32)
       draw()
       return true
     } catch {
       return false
     }
+  }
+
+  // Boxes move with the page while the canvas stays fixed; sizes only change on rebuild.
+  function place() {
+    const boxes = options.measure()
+    const { text, quiet: q, topology } = boxes
+    rect = [text.x, text.y, Math.max(1, text.w), Math.max(1, text.h)]
+    quiet = [q.x, q.y, q.w, q.h]
+    topo = topology ? [topology.x, topology.y, Math.max(1, topology.w), Math.max(1, topology.h)] : [0, 0, 1, 1]
+    return boxes
   }
 
   function draw() {
@@ -404,11 +495,14 @@ export function createParticleHero(canvas, options) {
     gl.uniform2f(uni.uRes, W, H)
     gl.uniform4f(uni.uRect, rect[0], rect[1], rect[2], rect[3])
     gl.uniform4f(uni.uQuiet, quiet[0], quiet[1], quiet[2], quiet[3])
+    gl.uniform4f(uni.uTopo, topo[0], topo[1], topo[2], topo[3])
     gl.uniform1f(uni.uTime, reduced ? 4 : time)
-    gl.uniform1f(uni.uAssemble, reduced ? 1 : easeOut(clamp((time - 0.2) / 2.6)))
+    // Scrolling straight into the morph must not wait for the intro to finish.
+    gl.uniform1f(uni.uAssemble, reduced ? 1 : Math.max(easeOut(clamp((time - 0.2) / 2.6)), clamp(morph * 6)))
     gl.uniform1f(uni.uScatter, reduced ? 0 : scatter)
+    gl.uniform1f(uni.uMorph, reduced ? 0 : morph)
     gl.uniform1f(uni.uDpr, dpr)
-    gl.uniform1f(uni.uShock, reduced ? -1 : shockAge(time))
+    gl.uniform1f(uni.uShock, reduced || morph > 0 ? -1 : shockAge(time))
     gl.uniform1f(uni.uDark, dark ? 1 : 0)
     gl.uniform2f(uni.uTilt, tilt.x, tilt.y)
     gl.uniform3fv(uni.uTrail, trail)
@@ -421,7 +515,7 @@ export function createParticleHero(canvas, options) {
   }
 
   function canAnimate() {
-    return pageVisible && inViewport && !reduced && !destroyed && !lost && !!resources
+    return pageVisible && inViewport && !parked && !reduced && !destroyed && !lost && !!resources
   }
 
   function resetClock() {
@@ -474,7 +568,7 @@ export function createParticleHero(canvas, options) {
   }
 
   const onPointer = event => {
-    if (!pageVisible || !inViewport || reduced || destroyed || lost || !resources || event.pointerType !== 'mouse') return
+    if (!pageVisible || !inViewport || parked || reduced || destroyed || lost || !resources || event.pointerType !== 'mouse') return
     const box = canvas.getBoundingClientRect()
     const x = event.clientX - box.left, y = event.clientY - box.top
     tilt.tx = (x / box.width - 0.5) * 2
@@ -567,6 +661,22 @@ export function createParticleHero(canvas, options) {
     setScatter(value) {
       scatter = clamp(value)
       if (reduced) draw()
+    },
+    setMorph(value) {
+      morph = clamp(value)
+      if (reduced) draw()
+    },
+    // Re-read the on-screen boxes without re-rasterising the wordmark.
+    track() {
+      if (destroyed || lost || !resources) return
+      try { place() } catch { return }
+      if (!canAnimate() && !parked) draw()
+    },
+    // Stop drawing while the fixed canvas has nothing left to show.
+    setParked(value) {
+      if (destroyed || parked === !!value) return
+      parked = !!value
+      syncPlayback()
     },
     rebuild: build,
     destroy() {
