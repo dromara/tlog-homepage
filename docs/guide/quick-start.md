@@ -50,9 +50,9 @@ tlog:
   mdc-enable: true
 ```
 
-入口会写入 MDC；`mdc-enable: true` 用于告知 TLog 消息适配器不要再次拼接标签。这里使用普通 encoder，不需要 Javaagent、启动类增强调用或额外的 MDC listener。
+每个请求进入时，TLog 会把完整标签写入 MDC 的 `tl` 字段，pattern 中的 `%X{tl}` 负责把它打印出来。这里用的是 logback 自带的普通 encoder，不需要 Javaagent、启动类增强调用或额外的 MDC listener。
 
-如果保留原有 TLog encoder/layout/converter，按[日志适配](/pages/5223de/)选择一种输出方式，避免重复标签。
+`mdc-enable: true` 表示“标签由 MDC 输出”。如果项目里还保留着 TLog 的 encoder/layout/converter，它们看到这个开关就不再往消息前面拼接标签，日志里不会出现两份。两种输出方式的区别见[日志适配](/pages/5223de/)。
 
 ## 3. 验证入口
 
@@ -83,11 +83,13 @@ public class TraceDemoController {
 curl -i -H 'tlogTraceId: demo-request-001' http://localhost:8080/trace-demo
 ```
 
-应当看到响应正文 `demo-request-001`、同值的 `tlogTraceId` 响应头，以及包含以下内容的真实日志：
+应当看到响应正文 `demo-request-001`、同值的 `tlogTraceId` 响应头，控制台日志类似：
 
 ```text
-<0><demo-request-001> ... 处理请求
+10:15:30.123 INFO  [http-nio-8080-exec-1] <0><demo-request-001> c.e.demo.TraceDemoController - 处理请求
 ```
+
+`<0><demo-request-001>` 就是 TLog 标签，默认格式为 `<spanId><traceId>`。`0` 表示这是链路的入口节点。
 
 再发送一次不带该头的请求，TLog 会生成新的 traceId。没有请求或任务入口时，普通启动日志不一定有标签，这是正常情况。
 

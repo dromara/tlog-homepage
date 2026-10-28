@@ -20,7 +20,7 @@ TLog 2.0 使用同一套 starter 适配 Boot 2、3、4，所有模块统一为 `
 </dependency>
 ```
 
-无需增加 `-jakarta` 模块。TLog 自身仍为 Java 8 字节码，源码构建需要 JDK 17+；应用运行 JDK 由所选 Spring Boot 和第三方框架决定。旧文档中的普通 Spring 接入不等于 Native Image 支持。
+无需增加 `-jakarta` 模块。TLog 自身仍为 Java 8 字节码，源码构建需要 JDK 17+；应用运行 JDK 由所选 Spring Boot 和第三方框架决定。TLog 没有做过 GraalVM Native Image 验证。
 
 ## 删除两种旧接入方式
 

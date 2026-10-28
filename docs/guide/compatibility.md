@@ -28,7 +28,7 @@ mvn clean install
 
 无需增加 `-jakarta` 模块或复制整套配置。TLog 根据 Spring 代际注册匹配的 Servlet Filter，并为 Boot 2 与 Boot 3/4 提供对应的自动配置发现文件。Spring 7 的 HTTP 头 API 变化已在集成代码中处理。
 
-兼容性表示库的适配范围，不表示所有第三方依赖的任意历史版本都能运行。例如，新 demo 使用 Forest 1.8.0；旧 Forest 1.5.14 的动态代理在现代 JDK 下不可用。
+兼容性表示库的适配范围，不表示所有第三方依赖的任意历史版本都能运行。例如，Forest 1.5.14 的动态代理在 JDK 17+ 上不可用，示例工程使用的是 Forest 1.8.0。
 
 ## 依赖由应用选择
 
@@ -75,7 +75,7 @@ try {
 
 ## 实际执行过的验证
 
-截至 **2026-10-23**，TLog 库 **158 项测试通过**，其中 29 项为 Kafka、RabbitMQ 新增。2026-10-22 完成的真实库级 fat jar 验证覆盖 Servlet 与 WebFlux：
+TLog 库 **158 项测试通过**（在源码目录执行 `mvn test -DskipTests=false`，项目默认跳过测试）。2026-10-22 完成的库级 fat jar 验证覆盖 Servlet 与 WebFlux：
 
 | Spring Boot | 运行 JDK | 已执行的入口验证 |
 | --- | --- | --- |
@@ -85,33 +85,31 @@ try {
 | 3.5.16 | 21 | Servlet、WebFlux |
 | 4.0.7 | 25 | Servlet、WebFlux |
 
-独立示例工程又完成四组完整运行：
+2026-10-25，[示例工程](/guide/examples)的一键验收在 10 组 Boot/JDK 组合上完整通过：
 
-| Boot | JDK | Dubbo | HTTP 日志实现 | 场景检查 |
-| --- | --- | --- | --- | --- |
-| 2.7.18 | 8 | 2.7.15 | logback | 26 |
-| 3.5.16 | 17 | 3.3.6 | logback | 27 |
-| 4.0.7 | 25 | 3.3.6 | logback | 27 |
-| 3.5.16 | 17 | 3.3.6 | Log4j2 | 27 |
+| profile | Spring Boot | 运行 JDK | 断言 |
+| --- | --- | --- | --- |
+| boot2 | 2.7.18 | 8、17、21、25 | 78/78 |
+| boot3 | 3.5.16 | 17、21、25 | 79/79 |
+| boot4 | 4.0.7 | 17、21、25 | 79/79 |
 
-四组共 **107 组场景检查**，每组另含 17 项纯 Java 检查和 7 项真实 RabbitMQ 检查。库单元/集成测试数与 demo 场景数是不同统计口径，不混加为一项指标。完整运行步骤见[可运行示例](/guide/examples)。
+boot2 少的一项是 RestClient，它从 Spring 6.1 才提供。每组都启动真实进程和服务端，覆盖 Servlet、WebFlux、Gateway、Feign、RestTemplate、HttpClient 4/5、OkHttp、Hutool、Forest、Apache Dubbo、Dubbox、Kafka、RabbitMQ、JDK Timer、Spring Scheduled、Quartz、XXL-JOB 调度中心、logback / log4j / log4j2 全部适配写法和 Logstash。库测试数与示例断言数是不同统计口径，不相加。
 
-Kafka 与 RabbitMQ 的 header 透传在 2026-10-23 用真实 broker（`apache/kafka:3.9.1` KRaft 单节点、`rabbitmq:4.1-alpine`）完成三组运行，每组各 10 项断言：
+各 profile 使用的 MQ 版本：
 
-| profile | Spring Boot | spring-kafka / kafka-clients | spring-amqp / amqp-client | 运行 JDK |
-| --- | --- | --- | --- | --- |
-| boot2 | 2.7.18 | 2.8.11 / 3.1.2 | 2.4.17 / 5.14.3 | 8 |
-| boot3 | 3.5.16 | 3.3.16 / 3.9.2 | 3.2.12 / 5.25.0 | 17 |
-| boot4 | 4.0.7 | 4.0.6 / 4.1.2 | 4.0.4 / 5.27.1 | 25 |
+| profile | spring-kafka / kafka-clients | spring-amqp / amqp-client |
+| --- | --- | --- |
+| boot2 | 2.8.11 / 3.1.2 | 2.4.17 / 5.14.3 |
+| boot3 | 3.3.16 / 3.9.2 | 3.2.12 / 5.25.0 |
+| boot4 | 4.0.6 / 4.1.2 | 4.0.4 / 5.27.1 |
 
-原生 RabbitMQ 示例的 amqp-client 固定为 5.20.0。未覆盖：Kafka 事务、`@RetryableTopic`、Kafka Streams；RabbitMQ 的 `DirectMessageListenerContainer` 只有单元测试，RabbitMQ Stream、`AsyncRabbitTemplate` 未覆盖。
-
-验收依据是 TLog 仓库中的 `docs/TLOG_2.0_RELEASE.md`、升级指南，以及 tlog-example 的 `README.md`、`docs/VALIDATION.md` 和机器摘要。这些结论来自实际本地执行；不把尚未触发的远端 CI 视为已经通过。
+broker 为 `apache/kafka:3.9.1`（KRaft 单节点）和 `rabbitmq:4.1-alpine`，原生 RabbitMQ 示例的 amqp-client 固定为 5.20.0。
 
 ## 哪些验证没有被宣称完成
 
-- 最小 starter 能启动，不等于已经启动真实 RPC、网关或任务管理服务端。
-- 本轮真实 demo 覆盖 Apache Dubbo、Spring Cloud Gateway、RabbitMQ 和 Kafka；没有把历史 Dubbox、Soul/ShenYu 完整服务端、XXL-JOB admin/executor、Quartz 集群、Log4j 1、Logstash 服务端示例算作已实测。
+- Soul、ShenYu 网关没有真实服务端示例。
+- Quartz 只验证单节点内存调度，没有覆盖集群模式。
+- Kafka 事务、`@RetryableTopic`、Kafka Streams 未覆盖；RabbitMQ 的 `DirectMessageListenerContainer` 只有单元测试，RabbitMQ Stream、`AsyncRabbitTemplate` 未覆盖。
 - 24 并发链路检查验证隔离与清理，不等于长时间性能、稳定性或容量压测。
 - 单套 Java 8 产物不等于 GraalVM Native Image 验证，也不等于所有第三方版本组合均逐一测试。
 
