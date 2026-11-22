@@ -1,0 +1,87 @@
+:root {
+  /* Design: ink + aurora. One gradient (mint → azure → violet) carries the brand;
+     everything else stays neutral so the trace thread is the only colour that moves. */
+  --tl-bg: #f7f8fb;
+  --tl-surface: #eef0f5;
+  --tl-elevated: #ffffff;
+  --tl-text: #0b1020;
+  --tl-muted: #4f5872;
+  --tl-faint: #606984;
+  --tl-line: #dde1ea;
+  --tl-line-strong: #c7cddb;
+  --tl-c1: #0fae8c;
+  --tl-c2: #3b7cf0;
+  --tl-c3: #7a5af5;
+  --tl-accent: #087a62;
+  --tl-accent-blue: #315fba;
+  --tl-accent-violet: #6448bc;
+  --tl-accent-soft: #0fae8c14;
+  --tl-gradient: linear-gradient(100deg, var(--tl-c1) 0%, var(--tl-c2) 52%, var(--tl-c3) 100%);
+  --tl-glass: color-mix(in srgb, var(--tl-elevated) 72%, transparent);
+  --tl-shadow: 0 1px 0 #ffffff inset, 0 24px 60px -28px #1a2a5a33;
+  /* Inter for Latin and digits; each platform's best CJK face for Chinese. */
+  --tl-display: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'HarmonyOS Sans SC', 'MiSans', 'Hiragino Sans GB', 'Microsoft YaHei UI', 'Microsoft YaHei', 'Noto Sans SC', 'Source Han Sans SC', sans-serif;
+  --tl-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'SF Mono', Menlo, Consolas, 'PingFang SC', 'Microsoft YaHei', monospace;
+  --tl-radius: 24px;
+  --tl-control-radius: 999px;
+  --tl-ease: cubic-bezier(.16, 1, .3, 1);
+
+  --vp-font-family-base: var(--tl-display);
+  --vp-font-family-mono: var(--tl-mono);
+  --vp-c-brand-1: var(--tl-accent);
+  --vp-c-brand-2: #066a55;
+  --vp-c-brand-3: #055844;
+  --vp-c-brand-soft: #0fae8c1a;
+  --vp-c-bg: var(--tl-bg);
+  --vp-c-bg-alt: var(--tl-surface);
+  --vp-c-bg-elv: var(--tl-elevated);
+  --vp-c-bg-soft: var(--tl-surface);
+  --vp-c-text-1: var(--tl-text);
+  --vp-c-text-2: var(--tl-muted);
+  --vp-c-text-3: var(--tl-faint);
+  --vp-c-divider: var(--tl-line);
+  --vp-c-border: var(--tl-line);
+  --vp-c-gutter: var(--tl-line);
+  --vp-nav-height: 68px;
+  --vp-nav-bg-color: color-mix(in srgb, var(--tl-bg) 76%, transparent);
+  --vp-sidebar-width: 288px;
+  --vp-sidebar-bg-color: var(--tl-bg);
+  --vp-layout-max-width: 1512px;
+  --vp-code-block-bg: #f1f3f8;
+  --vp-code-color: #5b3fd9;
+  --vp-code-bg: #7a5af512;
+  --vp-custom-block-info-bg: #3b7cf00d;
+  --vp-custom-block-info-border: #3b7cf033;
+  --vp-custom-block-tip-bg: #0fae8c0f;
+  --vp-custom-block-tip-border: #0fae8c38;
+}
+
+.dark {
+  --tl-bg: #05060b;
+  --tl-surface: #0c0e16;
+  --tl-elevated: #11141e;
+  --tl-text: #eef1f8;
+  --tl-muted: #a0a7bd;
+  --tl-faint: #7d849c;
+  --tl-line: #1b1f2c;
+  --tl-line-strong: #2a3042;
+  --tl-c1: #5ff0cf;
+  --tl-c2: #6aa8ff;
+  --tl-c3: #b28cff;
+  --tl-accent: #5ff0cf;
+  --tl-accent-blue: #6aa8ff;
+  --tl-accent-violet: #b28cff;
+  --tl-accent-soft: #5ff0cf14;
+  --tl-shadow: 0 1px 0 #ffffff0d inset, 0 30px 80px -30px #000000cc;
+  --vp-c-brand-1: #5ff0cf;
+  --vp-c-brand-2: #8af5dc;
+  --vp-c-brand-3: #19b394;
+  --vp-c-brand-soft: #5ff0cf17;
+  --vp-code-block-bg: #0a0c13;
+  --vp-code-color: #c6b3ff;
+  --vp-code-bg: #b28cff17;
+  --vp-custom-block-info-bg: #6aa8ff0d;
+  --vp-custom-block-info-border: #6aa8ff2e;
+  --vp-custom-block-tip-bg: #5ff0cf0b;
+  --vp-custom-block-tip-border: #5ff0cf2e;
+}

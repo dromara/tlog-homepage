@@ -1,41 +1,51 @@
-name: Build Project
+name: Build website
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+
+concurrency:
+  group: website-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      # 1. 拉取代码
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      # 2. 设置 Node.js 环境（使用最新版）
-      - name: Setup Node.js version
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '15.14.0'
-          cache: 'yarn'
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: website
+          path: docs/.vitepress/dist
+          include-hidden-files: true
+          retention-days: 7
 
-      # 3. 安装依赖
-      - name: Install Dependencies
-        run: yarn install
-
-      # 4. 构建项目
-      - name: Build Project
-        run: yarn build
-
-      # 5. 构建结果 推送到 dist 分支
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: website
+          path: docs/.vitepress/dist
+      - uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: dist
-          folder: ./docs/.vuepress/dist
+          folder: docs/.vitepress/dist

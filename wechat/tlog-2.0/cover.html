@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>TLog 2.0 公众号封面</title>
+<style>
+  @font-face {
+    font-family: 'Inter Variable';
+    src: url('../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+    font-weight: 100 900;
+  }
+  @font-face {
+    font-family: 'JetBrains Mono Variable';
+    src: url('../../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2');
+    font-weight: 100 800;
+  }
+  :root {
+    --ink: #0b1020;
+    --muted: #4f5872;
+    --line: #dde1ea;
+    --c1: #0fae8c;
+    --c2: #3b7cf0;
+    --c3: #7a5af5;
+    --grad: linear-gradient(100deg, var(--c1) 0%, var(--c2) 52%, var(--c3) 100%);
+    --sans: 'Inter Variable', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+    --mono: 'JetBrains Mono Variable', 'SF Mono', Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #f6f7fb; }
+  .grad-text {
+    background: var(--grad);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  .bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(620px 520px at 82% 18%, #3b7cf02e, transparent 70%),
+      radial-gradient(560px 480px at 96% 96%, #7a5af528, transparent 70%),
+      radial-gradient(520px 420px at 58% 100%, #0fae8c22, transparent 70%),
+      #f6f7fb;
+  }
+  .dots {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(#0b102014 1.6px, transparent 1.6px);
+    background-size: 34px 34px;
+    mask-image: linear-gradient(90deg, transparent 30%, #000 70%);
+  }
+
+  /* 主封面 2.35:1，按 2 倍尺寸绘制，导出 1800×766 */
+  .cover {
+    position: relative;
+    width: 1800px; height: 766px;
+    overflow: hidden;
+    font-family: var(--sans);
+    color: var(--ink);
+  }
+  .copy {
+    position: absolute;
+    left: 112px; top: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 16px;
+    font-size: 34px; font-weight: 700; letter-spacing: -.01em;
+  }
+  .brand img { width: 58px; height: 58px; }
+  .brand .tag {
+    margin-left: 6px;
+    font-family: var(--mono); font-size: 22px; font-weight: 600;
+    padding: 6px 16px; border-radius: 999px;
+    color: #087a62; background: #0fae8c1c; border: 1.5px solid #0fae8c40;
+  }
+  .h1 {
+    margin-top: 44px;
+    font-size: 116px; line-height: 1.12; font-weight: 600;
+    letter-spacing: .01em;
+  }
+  .h1 .en {
+    font-weight: 800; letter-spacing: -.035em;
+  }
+  .sub {
+    margin-top: 34px;
+    font-size: 38px; font-weight: 500;
+    color: var(--muted);
+  }
+  .sub b { color: var(--ink); font-weight: 600; }
+
+  /* 右侧：一次请求的日志卡片 */
+  .card {
+    position: absolute;
+    left: 1080px; top: 92px;
+    width: 640px;
+    padding: 34px 40px 38px;
+    border-radius: 32px;
+    background: #ffffffe6;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 2px 0 #fff inset, 0 40px 90px -36px #1a2a5a55, 0 0 0 1.5px #0b10200d;
+    transform: rotate(-2.5deg);
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .lights { display: flex; gap: 10px; }
+  .lights i { width: 16px; height: 16px; border-radius: 50%; background: #e3e6ee; }
+  .card-head .file { font-family: var(--mono); font-size: 20px; color: #8a93ab; }
+  .tid-label {
+    margin-top: 30px;
+    font-family: var(--mono); font-size: 19px; color: #8a93ab; letter-spacing: .06em;
+  }
+  .tid {
+    margin-top: 6px;
+    font-family: var(--mono); font-size: 40px; font-weight: 700; letter-spacing: -.01em;
+  }
+  .rows {
+    position: relative;
+    margin-top: 26px;
+    border-top: 1.5px dashed var(--line);
+    padding-top: 12px;
+  }
+  .rows::before {
+    content: '';
+    position: absolute;
+    left: 11px; top: 52px; bottom: 40px;
+    width: 4px; border-radius: 4px;
+    background: linear-gradient(180deg, var(--c1), var(--c2) 55%, var(--c3));
+  }
+  .row {
+    position: relative;
+    display: flex; align-items: center;
+    height: 76px;
+    padding-left: 48px;
+  }
+  .row::before {
+    content: '';
+    position: absolute; left: 3px; top: 50%;
+    width: 20px; height: 20px; margin-top: -10px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid var(--dot, var(--c2));
+  }
+  .row .span {
+    width: 92px;
+    font-family: var(--mono); font-size: 24px; font-weight: 600; color: #087a62;
+  }
+  .row .svc { width: 150px; font-family: var(--mono); font-size: 26px; font-weight: 700; }
+  .row .msg { flex: 1; font-size: 25px; color: var(--muted); }
+  .row .via {
+    font-family: var(--mono); font-size: 20px; font-weight: 600;
+    padding: 5px 14px; border-radius: 999px;
+    color: var(--via, #315fba); background: color-mix(in srgb, var(--via, #315fba) 10%, transparent);
+  }
+
+  /* 1:1 分享图，导出 766×766 */
+  .square {
+    position: relative;
+    width: 766px; height: 766px;
+    overflow: hidden;
+    font-family: var(--sans);
+    color: var(--ink);
+  }
+  .square .bg {
+    background:
+      radial-gradient(420px 380px at 85% 10%, #3b7cf030, transparent 70%),
+      radial-gradient(420px 380px at 10% 100%, #7a5af52a, transparent 70%),
+      radial-gradient(360px 300px at 100% 100%, #0fae8c22, transparent 70%),
+      #f6f7fb;
+  }
+  .square .dots { mask-image: radial-gradient(circle at 50% 50%, transparent 25%, #000 80%); }
+  .square .inner {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .square img { width: 120px; height: 120px; }
+  .square .big {
+    margin-top: 28px;
+    font-size: 150px; line-height: 1; font-weight: 800; letter-spacing: -.045em;
+  }
+  .square .small {
+    margin-top: 30px;
+    font-size: 44px; font-weight: 600; letter-spacing: .04em;
+    color: var(--muted);
+  }
+
+  body[data-only="cover"] .square,
+  body[data-only="square"] .cover { display: none; }
+  body:not([data-only]) { display: flex; flex-direction: column; gap: 40px; padding: 40px; }
+</style>
+</head>
+<body>
+
+<section class="cover" id="cover">
+  <div class="bg"></div>
+  <div class="dots"></div>
+  <div class="copy">
+    <div class="brand"><img src="../../docs/public/img/logo.svg" alt="">TLog<span class="tag">v2.0.0</span></div>
+    <div class="h1">鸽了两年的<br><span class="en">TLog <span class="grad-text">2.0</span></span> 来了</div>
+    <div class="sub">一套 starter，跑通 <b>Spring Boot 2 / 3 / 4</b></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="lights"><i></i><i></i><i></i></div>
+      <div class="file">一次下单请求</div>
+    </div>
+    <div class="tid-label">TRACE ID</div>
+    <div class="tid grad-text">7184204306423936</div>
+    <div class="rows">
+      <div class="row" style="--dot:#0fae8c"><span class="span">0</span><span class="svc">order</span><span class="msg">收到下单请求</span><span class="via" style="--via:#087a62">HTTP</span></div>
+      <div class="row" style="--dot:#25979f"><span class="span">0.1</span><span class="svc">stock</span><span class="msg">锁定库存</span><span class="via" style="--via:#1f7a8c">Feign</span></div>
+      <div class="row" style="--dot:#3b7cf0"><span class="span">0.1</span><span class="svc">stock</span><span class="msg">异步记流水</span><span class="via" style="--via:#315fba">@Async</span></div>
+      <div class="row" style="--dot:#5a6bf3"><span class="span">0.2</span><span class="svc">pay</span><span class="msg">创建支付单</span><span class="via" style="--via:#4a55c8">Dubbo</span></div>
+      <div class="row" style="--dot:#7a5af5"><span class="span">0.3</span><span class="svc">notify</span><span class="msg">推送下单成功</span><span class="via" style="--via:#6448bc">Kafka</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="square" id="square">
+  <div class="bg"></div>
+  <div class="dots"></div>
+  <div class="inner">
+    <img src="../../docs/public/img/logo.svg" alt="">
+    <div class="big">TLog <span class="grad-text">2.0</span></div>
+    <div class="small">鸽了两年，来了</div>
+  </div>
+</section>
+
+<script>
+  const only = new URLSearchParams(location.search).get('only');
+  if (only) document.body.dataset.only = only;
+</script>
+</body>
+</html>

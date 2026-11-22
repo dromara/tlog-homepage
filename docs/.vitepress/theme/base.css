@@ -1,0 +1,71 @@
+html { scroll-behavior: smooth; scroll-padding-top: 96px; }
+body { min-width: 0; background: var(--tl-bg); color: var(--tl-text); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; font-feature-settings: 'cv11', 'ss01'; }
+::selection { background: color-mix(in srgb, var(--tl-c2) 30%, transparent); color: var(--tl-text); }
+:focus-visible { outline: 2px solid var(--tl-c2); outline-offset: 4px; border-radius: 6px; }
+button, a { -webkit-tap-highlight-color: transparent; }
+p { text-wrap: pretty; }
+h1, h2, h3 { text-wrap: balance; }
+
+.gradient-text {
+  background: var(--tl-gradient);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 22px; color: var(--tl-muted); font: 500 11px/1.4 var(--tl-mono); letter-spacing: .18em; }
+.eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--tl-gradient); }
+
+/* Navigation: floats transparently over the home hero, turns to frosted glass on scroll. */
+.VPNav { z-index: 40; }
+.VPNavBar { background: transparent !important; transition: background-color .4s, border-color .4s, backdrop-filter .4s; border-bottom: 1px solid transparent; }
+.VPNavBar:not(.top), .VPNavBar.has-sidebar { background: var(--vp-nav-bg-color) !important; backdrop-filter: saturate(180%) blur(18px); -webkit-backdrop-filter: saturate(180%) blur(18px); border-bottom-color: var(--tl-line); }
+.VPNavBar .content-body, .VPNavBar .title { background: transparent !important; }
+.VPNavBar .divider { display: none; }
+/* One navigation layout everywhere: the default theme re-flows the bar around
+   the sidebar on doc pages, which made the logo and links jump between pages. */
+@media (min-width: 960px) {
+  .VPNavBar.has-sidebar .wrapper { padding: 0 32px !important; }
+  .VPNavBar.has-sidebar .container { max-width: calc(var(--vp-layout-max-width) - 64px) !important; }
+  .VPNavBar.has-sidebar .container > .title { position: static !important; padding: 0 !important; width: auto !important; height: var(--vp-nav-height) !important; }
+  .VPNavBar.has-sidebar .container > .content { padding: 0 !important; }
+  .VPNavBarTitle.has-sidebar .title { border-bottom-color: transparent !important; }
+}
+.VPNavBarTitle .title { font-size: 20px; font-weight: 700; letter-spacing: -.03em; gap: 10px; border-bottom: 0 !important; }
+.VPNavBarTitle .logo { width: 28px; height: 28px; }
+/* The logo is monochrome: pure ink in light mode, white in dark mode. */
+.VPNavBarTitle .logo, .footer-brand img { filter: brightness(0); }
+.dark .VPNavBarTitle .logo, .dark .footer-brand img { filter: brightness(0) invert(1); }
+.VPNavBarMenuLink { font-size: 13.5px !important; font-weight: 500 !important; color: var(--tl-muted) !important; transition: color .2s; }
+.VPNavBarMenuLink:hover, .VPNavBarMenuLink.active { color: var(--tl-text) !important; }
+.VPNavBarMenuLink.active { position: relative; }
+.VPNavBarMenuLink.active::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: 14px; height: 2px; border-radius: 2px; background: var(--tl-gradient); }
+.VPNavBarSearch .DocSearch-Button { background: color-mix(in srgb, var(--tl-surface) 70%, transparent) !important; border: 1px solid var(--tl-line); border-radius: 999px; transition: border-color .2s; }
+.VPNavBarSearch .DocSearch-Button:hover { border-color: var(--tl-line-strong); }
+.DocSearch-Button-Key { border-color: var(--tl-line) !important; }
+.VPNavBarAppearance .VPSwitch { border-color: var(--tl-line); background: var(--tl-surface); }
+.VPNavScreen { background: var(--tl-bg) !important; }
+
+/* Buttons */
+.tl-button { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 0 26px; border-radius: var(--tl-control-radius); font-size: 14.5px; font-weight: 600; white-space: nowrap; isolation: isolate; transition: transform .35s var(--tl-ease), box-shadow .35s, background-color .25s, border-color .25s; }
+.tl-button.primary { color: var(--tl-bg); background: var(--tl-text); }
+.tl-button.primary::before { content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; background: var(--tl-gradient); opacity: 0; transition: opacity .35s; }
+.tl-button.primary::after { content: ''; position: absolute; inset: 0; z-index: -2; border-radius: inherit; background: var(--tl-gradient); filter: blur(18px); opacity: 0; transition: opacity .35s; }
+.tl-button.primary:hover { transform: translateY(-2px); color: #05060b; }
+.tl-button.primary:hover::before { opacity: 1; }
+.tl-button.primary:hover::after { opacity: .55; }
+.tl-button.primary svg { transition: transform .35s var(--tl-ease); }
+.tl-button.primary:hover svg { transform: translateX(3px); }
+.tl-button.ghost { color: var(--tl-text); border: 1px solid var(--tl-line-strong); background: color-mix(in srgb, var(--tl-elevated) 40%, transparent); backdrop-filter: blur(10px); }
+.tl-button.ghost:hover { border-color: var(--tl-muted); transform: translateY(-2px); }
+.tl-button.large { min-height: 58px; padding: 0 32px; font-size: 15.5px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+@media (forced-colors: active) {
+  .gradient-text, .wordmark em, .has-particles .wordmark-text { background: none !important; color: CanvasText !important; -webkit-text-fill-color: CanvasText !important; }
+  .particle-canvas { display: none; }
+}
