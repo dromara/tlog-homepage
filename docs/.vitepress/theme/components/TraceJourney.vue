@@ -103,7 +103,7 @@ onBeforeUnmount(() => {
         <ol class="journey-steps">
           <li v-for="(step, index) in steps" :key="step.title" :class="{ current: index === active, done: index < active }">
             <span class="step-index">{{ String(index + 1).padStart(2, '0') }}</span>
-            <div><strong>{{ step.title }}</strong><p>{{ step.text }}</p></div>
+            <div><strong>{{ step.title }}</strong><p><span>{{ step.text }}</span></p></div>
           </li>
         </ol>
       </div>

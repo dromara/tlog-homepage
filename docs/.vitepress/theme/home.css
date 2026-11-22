@@ -94,7 +94,7 @@
 
 /* ── Scroll journey ───────────────────────────────────────────────────── */
 .journey { position: relative; height: 480vh; }
-.journey-stage { position: sticky; top: 0; height: 100vh; min-height: 640px; display: grid; grid-template-columns: .82fr 1.18fr; gap: 64px; align-items: center; padding-top: var(--vp-nav-height); }
+.journey-stage { position: sticky; top: 0; min-height: 100vh; display: grid; grid-template-columns: .82fr 1.18fr; gap: 64px; align-items: center; padding-top: var(--vp-nav-height); }
 .journey-copy h2, .section-heading h2, .start-copy h2, .cta h2 { margin: 0 0 28px; font-size: clamp(38px, 4.4vw, 62px); font-weight: 700; line-height: 1.18; letter-spacing: -.03em; }
 .journey-steps { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
 .journey-steps li { display: flex; gap: 18px; padding: 12px 16px; margin-left: -16px; border-radius: 14px; color: var(--tl-muted); transition: background-color .4s, color .4s; }
@@ -104,6 +104,7 @@
 .journey-steps li.current .step-index { color: var(--tl-accent); }
 .journey-steps strong { display: block; font-size: 16px; font-weight: 600; }
 .journey-steps p { display: grid; grid-template-rows: 0fr; margin: 0; color: var(--tl-muted); font-size: 14px; line-height: 1.75; transition: grid-template-rows .5s var(--tl-ease), margin .5s var(--tl-ease); overflow: hidden; }
+.journey-steps p > span { min-height: 0; }
 .journey-steps li.current p { grid-template-rows: 1fr; margin-top: 4px; }
 .journey.is-static { height: auto; }
 .journey.is-static .journey-stage { position: relative; height: auto; min-height: 0; padding-block: 96px; }
@@ -112,6 +113,11 @@
 
 .journey-visual { display: grid; gap: 18px; min-width: 0; }
 .topology { width: 100%; height: auto; overflow: visible; }
+/* Reserve space for all log rows while the diagram is pinned. */
+@media (min-width: 1101px) and (min-height: 701px) and (prefers-reduced-motion: no-preference) {
+  .journey-visual { max-height: calc(100vh - var(--vp-nav-height) - 32px); grid-template-rows: minmax(0, 1fr) auto; }
+  .journey-visual .topology { width: auto; height: auto; max-width: 100%; max-height: 100%; justify-self: center; }
+}
 .grid-dots circle { fill: var(--tl-line-strong); }
 .edge-rail { fill: none; stroke: var(--tl-line-strong); stroke-width: 1.5; stroke-dasharray: 3 6; }
 .edge-line, .edge-glow { fill: none; stroke: url(#edge-gradient); stroke-linecap: round; stroke-dasharray: 1 1; transition: stroke-dashoffset .12s linear; }
@@ -143,7 +149,7 @@
 .t-span { color: var(--tl-accent-violet); min-width: 56px; }
 .t-trace { color: var(--tl-accent); }
 .t-svc { color: var(--tl-accent-blue); min-width: 100px; }
-.t-msg { color: var(--tl-text); }
+.t-msg { min-width: 0; white-space: normal; overflow-wrap: anywhere; color: var(--tl-text); }
 
 /* ── Bento ────────────────────────────────────────────────────────────── */
 .bento-section { padding-top: 140px; }
