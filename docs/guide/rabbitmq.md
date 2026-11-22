@@ -1,6 +1,6 @@
 ---
 title: 对 RabbitMQ 的支持
-permalink: /guide/rabbitmq
+permalink: /guide/rabbitmq/
 description: 'TLog 2.0 通过 RabbitMQ 消息 header 透传 traceId：Spring AMQP 自动装配，原生 amqp-client 一行接入。'
 ---
 
@@ -140,4 +140,4 @@ channel.basicConsume(queue, false, TLogRabbitConsumerProcessor.wrap((tag, delive
 - 监听方法把工作交给其它线程池时，该线程池需要经过 TLog 装饰，见[线程池](/pages/a69e1d/)。
 - 已实际运行验证：Spring AMQP 2.4.17 / 3.2.12 / 4.0.4（对应 Boot 2.7 / 3.5 / 4.0）、原生 amqp-client 5.20.0，broker 为 RabbitMQ 4.1。`DirectMessageListenerContainer` 只有单元测试，RabbitMQ Stream、`AsyncRabbitTemplate` 尚未覆盖。
 
-可运行的双进程示例见[可运行示例](/guide/examples#rabbitmq)。其它消息中间件仍可使用[消息体包装](/pages/097174/)。
+可运行的双进程示例见[可运行示例](/guide/examples/#rabbitmq)。其它消息中间件仍可使用[消息体包装](/pages/097174/)。

@@ -131,8 +131,8 @@ onBeforeUnmount(() => {
             <!-- Packets carrying the TraceId keep flowing once a call is made. -->
             <g v-if="edgeDraw(index) >= 1 && !staticMode" class="packets">
               <g v-for="n in 3" :key="n">
-                <circle r="9" fill="url(#packet-glow)" opacity=".7"><animateMotion :dur="`${1.6 + index * 0.15}s`" :begin="`${(n - 1) * 0.53}s`" repeatCount="indefinite" rotate="auto"><mpath :href="`#edge-path-${index}`" /></animateMotion></circle>
-                <circle r="2.4" class="packet-core"><animateMotion :dur="`${1.6 + index * 0.15}s`" :begin="`${(n - 1) * 0.53}s`" repeatCount="indefinite"><mpath :href="`#edge-path-${index}`" /></animateMotion></circle>
+                <circle r="9" fill="url(#packet-glow)" opacity=".7"><animateMotion :dur="`${1.6 + index * 0.15}s`" :begin="`${(1 - n) * 0.53}s`" repeatCount="indefinite" rotate="auto"><mpath :href="`#edge-path-${index}`" /></animateMotion></circle>
+                <circle r="2.4" class="packet-core"><animateMotion :dur="`${1.6 + index * 0.15}s`" :begin="`${(1 - n) * 0.53}s`" repeatCount="indefinite"><mpath :href="`#edge-path-${index}`" /></animateMotion></circle>
               </g>
             </g>
           </g>

@@ -58,7 +58,7 @@ for (const sourceFile of walk(docsDir, true).filter(file => file.endsWith('.md')
 }
 stats.pages = expected.size
 if (expected.size < 60) fail('docs', `expected at least the 60 audited pages, found ${expected.size}`)
-for (const route of ['/', '/guide/quick-start', '/guide/upgrade', '/guide/configuration', '/guide/compatibility', '/guide/examples', '/guide/webflux']) {
+for (const route of ['/', '/guide/quick-start/', '/guide/upgrade/', '/guide/configuration/', '/guide/compatibility/', '/guide/examples/', '/guide/webflux/']) {
   if (!expected.has(routeFile(route))) fail('docs', `required page missing: ${route}`)
 }
 

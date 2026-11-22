@@ -1,6 +1,6 @@
 ---
 title: WebFlux、WebClient 与响应式上下文
-permalink: /guide/webflux
+permalink: /guide/webflux/
 description: 'WebFlux 和 WebClient 使用 Reactor Context 隔离请求，了解线程切换、网关转发与传播边界。'
 ---
 
@@ -95,7 +95,7 @@ tlog:
 
 `web.enabled` 控制入口，`http-client.enabled` 控制 Builder 的自动装饰；手工添加的过滤器仍由应用管理。响应头开关关闭 `tlogTraceId` 回写。
 
-没有 TLog traceId 时可以沿用合法 `traceparent` 的 trace-id。TLog 仍使用自己的层级 spanId，不等于完整 W3C 传播或 OpenTelemetry span 导出，详见[兼容性说明](/guide/compatibility#w3c-与其它边界)。
+没有 TLog traceId 时可以沿用合法 `traceparent` 的 trace-id。TLog 仍使用自己的层级 spanId，不等于完整 W3C 传播或 OpenTelemetry span 导出，详见[兼容性说明](/guide/compatibility/#w3c-与其它边界)。
 
 ## 验证与限制
 
@@ -107,4 +107,4 @@ TLog 注册的 hook 名为 `com.yomahub.tlog.context`。不要在应用运行期
 
 原生线程、未包装的外部执行器，以及脱离当前响应式链的手工订阅，不会因“入口用了 WebFlux”就自动具备正确上下文。仍需显式包装或传递。Hook 也有操作符包装和上下文恢复成本，不能承诺固定性能损耗比例。
 
-可以直接运行[示例的一键验收](/guide/examples)，观察 Gateway → WebFlux → HTTP 三进程中 trace 保持一致、span 按 `0 → 0.1 → 0.1.1` 递进。
+可以直接运行[示例的一键验收](/guide/examples/)，观察 Gateway → WebFlux → HTTP 三进程中 trace 保持一致、span 按 `0 → 0.1 → 0.1.1` 递进。

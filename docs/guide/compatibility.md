@@ -1,6 +1,6 @@
 ---
 title: 兼容性与验证范围
-permalink: /guide/compatibility
+permalink: /guide/compatibility/
 description: 'TLog 2.0 的 JDK 与 Spring Boot 兼容矩阵、源码构建方式及实际验收范围。'
 ---
 
@@ -71,7 +71,7 @@ try {
 }
 ```
 
-日志实现和客户端依赖仍需由应用提供。不要在这种环境调用 Spring 专属的配置类；真正无 Spring 的打包和网络验证见[纯 Java 示例](/guide/examples#纯-java-客户端)。
+日志实现和客户端依赖仍需由应用提供。不要在这种环境调用 Spring 专属的配置类；真正无 Spring 的打包和网络验证见[纯 Java 示例](/guide/examples/#纯-java-客户端)。
 
 ## 实际执行过的验证
 
@@ -85,7 +85,7 @@ TLog 库 **158 项测试通过**（在源码目录执行 `mvn test -DskipTests=f
 | 3.5.16 | 21 | Servlet、WebFlux |
 | 4.0.7 | 25 | Servlet、WebFlux |
 
-2026-10-25，[示例工程](/guide/examples)的一键验收在 10 组 Boot/JDK 组合上完整通过：
+2026-10-25，[示例工程](/guide/examples/)的一键验收在 10 组 Boot/JDK 组合上完整通过：
 
 | profile | Spring Boot | 运行 JDK | 断言 |
 | --- | --- | --- | --- |
@@ -124,6 +124,6 @@ curl -H 'traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01' \
 
 TLog 仍使用自己的层级 spanId 和出站头。本版本不宣称完整 W3C 出站 traceparent/tracestate、采样决策、OpenTelemetry span 导出或 APM 界面。
 
-2.0 已移除 javaagent 和 `AspectLogEnhance.enhance()`，日志通过配置文件适配器或 MDC 输出。原生线程、未包装的外部执行器、脱离 Reactor 链路的手工订阅仍需明确管理上下文；详见[WebFlux](/guide/webflux)与[示例](/guide/examples)。
+2.0 已移除 javaagent 和 `AspectLogEnhance.enhance()`，日志通过配置文件适配器或 MDC 输出。原生线程、未包装的外部执行器、脱离 Reactor 链路的手工订阅仍需明确管理上下文；详见[WebFlux](/guide/webflux/)与[示例](/guide/examples/)。
 
 追踪会增加上下文捕获与恢复开销。2.0 不继续承诺固定“0.01% 损耗”；应结合自己的日志量、线程模型和请求负载做测量。

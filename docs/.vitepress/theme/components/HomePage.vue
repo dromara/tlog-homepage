@@ -66,7 +66,7 @@ onBeforeUnmount(() => { observer?.disconnect(); media?.removeEventListener('chan
         <p>TLog 专注于日志标记与上下文传播，和你已有的日志平台协作，而不是替代它。</p>
       </div>
       <div class="bento">
-        <a class="card card-compat" href="/guide/compatibility" @pointermove="spotlight" @pointerleave="leave">
+        <a class="card card-compat" href="/guide/compatibility/" @pointermove="spotlight" @pointerleave="leave">
           <div class="card-top"><span>跨代兼容</span><PhArrowUpRight :size="18" /></div>
           <div class="router" aria-label="同一个 tlog-web-spring-boot-starter 2.0.0，自动适配 Spring Boot 2、3、4">
             <div class="router-source">
@@ -95,17 +95,17 @@ onBeforeUnmount(() => { observer?.disconnect(); media?.removeEventListener('chan
           <div class="feather-lines" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
           <div><h3>只标记日志，保持简单。</h3><p>不另建存储，不接管日志平台。让已有日志多一条可检索的线索。</p></div>
         </a>
-        <a class="card card-async" href="/guide/webflux" @pointermove="spotlight" @pointerleave="leave">
+        <a class="card card-async" href="/guide/webflux/" @pointermove="spotlight" @pointerleave="leave">
           <div class="card-top"><PhGitBranch :size="26" weight="light" /><PhArrowUpRight :size="18" /></div>
           <div class="orbit" aria-hidden="true"><i></i><i></i><i></i><b></b><b></b><b></b></div>
           <div><h3>跨线程，也有迹可循。</h3><p>Spring 执行器、Reactor Context 与 MDC，传递同一个请求上下文。</p></div>
         </a>
-        <a class="card card-integrations" href="/guide/examples" @pointermove="spotlight" @pointerleave="leave">
+        <a class="card card-integrations" href="/guide/examples/" @pointermove="spotlight" @pointerleave="leave">
           <div class="card-top"><PhStack :size="26" weight="light" /><PhArrowUpRight :size="18" /></div>
           <div class="chips" aria-label="部分集成"><span>Dubbo</span><span>Feign</span><span>WebClient</span><span>Gateway</span><span>Kafka</span><span>RabbitMQ</span><span>Logback</span><span>Log4j2</span><span>XXL-JOB</span></div>
           <div><h3>真实链路，真实日志。</h3><p>运行可验收的示例工程，观察一次请求如何穿过多个进程和真实的 Kafka、RabbitMQ。</p></div>
         </a>
-        <a class="card card-zero" href="/guide/upgrade" @pointermove="spotlight" @pointerleave="leave">
+        <a class="card card-zero" href="/guide/upgrade/" @pointermove="spotlight" @pointerleave="leave">
           <div class="card-top"><PhLightning :size="26" weight="light" /><PhArrowUpRight :size="18" /></div>
           <div class="zero"><span>-javaagent</span><span>enhance()</span><span>listener</span></div>
           <div><h3>更少的接入步骤。</h3><p>2.0 不再需要 Javaagent 和启动增强调用，引入 starter 即可。</p></div>
@@ -118,7 +118,7 @@ onBeforeUnmount(() => { observer?.disconnect(); media?.removeEventListener('chan
         <span class="eyebrow">GET STARTED</span>
         <h2>从一行日志，<br><span class="gradient-text">看清全程。</span></h2>
         <p>引入依赖，配置日志格式。<br>其余的，交给熟悉的 Spring 生态。</p>
-        <a class="inline-link" href="/guide/quick-start">阅读完整接入指南 <PhArrowRight :size="18" /></a>
+        <a class="inline-link" href="/guide/quick-start/">阅读完整接入指南 <PhArrowRight :size="18" /></a>
       </div>
       <InstallSnippet />
     </section>
@@ -131,7 +131,7 @@ onBeforeUnmount(() => { observer?.disconnect(); media?.removeEventListener('chan
           <h2>已有 TLog 1.x？<br>带上经验，轻装升级。</h2>
           <p>接入方式、异步传播、兼容边界，都写在这份迁移指南里。</p>
         </div>
-        <a class="tl-button primary large" href="/guide/upgrade" aria-label="阅读 TLog 1.x 到 2.0 升级指南"><span>阅读升级指南</span><PhArrowUpRight :size="20" /></a>
+        <a class="tl-button primary large" href="/guide/upgrade/" aria-label="阅读 TLog 1.x 到 2.0 升级指南"><span>阅读升级指南</span><PhArrowUpRight :size="20" /></a>
       </div>
     </section>
 
@@ -149,7 +149,7 @@ onBeforeUnmount(() => { observer?.disconnect(); media?.removeEventListener('chan
     </section>
 
     <footer class="site-footer tl-container">
-      <div class="footer-top"><a class="footer-brand" href="/" aria-label="TLog 首页"><img src="/img/logo.svg" alt="" width="30" height="30">TLog</a><p>一个 TraceId，串起每一行日志。</p><nav class="footer-links" aria-label="页脚链接"><a href="/guide/quick-start">文档</a><a href="/pages/73c2c3/">社区</a><a href="https://gitee.com/dromara/TLog" target="_blank" rel="noopener noreferrer">Gitee ↗</a><a href="https://github.com/dromara/TLog" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav></div>
+      <div class="footer-top"><a class="footer-brand" href="/" aria-label="TLog 首页"><img src="/img/logo.svg" alt="" width="30" height="30">TLog</a><p>一个 TraceId，串起每一行日志。</p><nav class="footer-links" aria-label="页脚链接"><a href="/guide/quick-start/">文档</a><a href="/pages/73c2c3/">社区</a><a href="https://gitee.com/dromara/TLog" target="_blank" rel="noopener noreferrer">Gitee ↗</a><a href="https://github.com/dromara/TLog" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav></div>
       <div class="footer-bottom"><span>© 2020-2026 TLog. MIT License.</span><div class="sponsor"><span>感谢社区赞助</span><a href="https://easysearch.cn" target="_blank" rel="noopener noreferrer">Easysearch ↗</a><a href="/pages/fb599d/">支持项目</a></div><a href="https://dromara.org" target="_blank" rel="noopener noreferrer">Dromara 开源社区 ↗</a></div>
     </footer>
   </main>

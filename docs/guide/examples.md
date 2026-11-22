@@ -1,6 +1,6 @@
 ---
 title: 可运行示例与一键验收
-permalink: /guide/examples
+permalink: /guide/examples/
 description: '运行真实 HTTP、Dubbo、Gateway、Kafka、RabbitMQ 和纯 Java 示例，查看可重复的验收结果。'
 ---
 
@@ -144,7 +144,7 @@ java -jar tlog-example-mq/tlog-example-mq-kafka-native/target/tlog-example-mq-ka
   --role=producer --bootstrap=127.0.0.1:9092 --topic=tlog.native --probe=kafka-native-manual
 ```
 
-结束后执行 `docker rm -f tlog-kafka`。接入方式见[对 Kafka 的支持](/guide/kafka)。
+结束后执行 `docker rm -f tlog-kafka`。接入方式见[对 Kafka 的支持](/guide/kafka/)。
 
 ### RabbitMQ
 
@@ -190,7 +190,7 @@ java -jar tlog-example-mq/tlog-example-mq-rabbitmq/target/tlog-example-mq-rabbit
   --role=producer --amqp-uri='amqp://tlogdemo:tlogdemo@127.0.0.1:56720/%2F' --queue=tlog.manual --probe=mq-manual
 ```
 
-结束所有 JVM 后执行 `docker compose down -v`。接入方式见[对 RabbitMQ 的支持](/guide/rabbitmq)和[消息体包装](/pages/097174/)。
+结束所有 JVM 后执行 `docker compose down -v`。接入方式见[对 RabbitMQ 的支持](/guide/rabbitmq/)和[消息体包装](/pages/097174/)。
 
 ## 一键验收
 
@@ -224,4 +224,4 @@ python3 scripts/verify-demo.py --profile boot4 \
 
 结果写入 `validation-results/<时间-profile-run-id>/`，包括每项断言、各进程日志、jar SHA-256 和关闭检查。Maven clean 不会删除这些记录。
 
-最近一次完整运行（2026-10-25）覆盖 boot2 × JDK 8/17/21/25、boot3 × JDK 17/21/25、boot4 × JDK 17/21/25 共 10 组，每组 78 或 79 项断言全部通过（boot2 没有 RestClient，少一项）。版本细节和未覆盖项见[兼容性与验证范围](/guide/compatibility)。
+最近一次完整运行（2026-10-25）覆盖 boot2 × JDK 8/17/21/25、boot3 × JDK 17/21/25、boot4 × JDK 17/21/25 共 10 组，每组 78 或 79 项断言全部通过（boot2 没有 RestClient，少一项）。版本细节和未覆盖项见[兼容性与验证范围](/guide/compatibility/)。

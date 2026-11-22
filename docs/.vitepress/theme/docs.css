@@ -8,7 +8,6 @@
 .doc-sponsor { position: relative; display: block; margin-bottom: 28px; border-radius: 12px; overflow: hidden; border: 1px solid var(--tl-line); line-height: 0; transition: border-color .25s, transform .35s var(--tl-ease), box-shadow .35s; }
 .doc-sponsor:hover { border-color: #836eff; transform: translateY(-1px); box-shadow: 0 14px 34px -20px #836eff99; }
 .doc-sponsor img { display: block; width: 100%; height: auto; }
-.doc-sponsor-tag { position: absolute; right: 8px; bottom: 6px; padding: 1px 6px; border-radius: 4px; font: 10px/1.5 var(--tl-mono); letter-spacing: .06em; color: #ffffffcc; background: #00000040; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
 
 .doc-kicker { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; font: 11.5px var(--tl-mono); color: var(--tl-faint); letter-spacing: .04em; }
 .doc-kicker a { color: var(--tl-muted); transition: color .2s; }

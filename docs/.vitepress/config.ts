@@ -41,8 +41,8 @@ export default defineConfig({
     logo: { src: '/img/logo.svg', alt: 'TLog' },
     siteTitle: 'TLog',
     nav: [
-      { text: '文档', link: '/guide/quick-start', activeMatch: '^/(?:guide/(?!upgrade)|pages/(?!73c2c3)|archives/)' },
-      { text: '2.0 升级', link: '/guide/upgrade', activeMatch: '^/guide/upgrade' },
+      { text: '文档', link: '/guide/quick-start/', activeMatch: '^/(?:guide/(?!upgrade)|pages/(?!73c2c3)|archives/)' },
+      { text: '2.0 升级', link: '/guide/upgrade/', activeMatch: '^/guide/upgrade/' },
       { text: '生态', link: '/#ecosystem' },
       { text: '社区', link: '/pages/73c2c3/', activeMatch: '^/pages/73c2c3' },
     ],

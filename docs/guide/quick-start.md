@@ -1,6 +1,6 @@
 ---
 title: 快速开始
-permalink: /guide/quick-start
+permalink: /guide/quick-start/
 description: '在已有 Spring Boot 应用中接入 TLog 2.0，配置日志并用真实 HTTP 请求验证。'
 ---
 
@@ -22,7 +22,7 @@ description: '在已有 Spring Boot 应用中接入 TLog 2.0，配置日志并�
 
 Boot 2、3、4 使用同一套 TLog 坐标，不需要 `-jakarta` 后缀。TLog 自身为 Java 8 字节码，运行 JDK 仍要满足应用框架要求。Boot 4 的 Servlet 应用可以使用 `spring-boot-starter-webmvc`；TLog 的 starter 不替应用引入整套 Web 运行时。
 
-Feign、Dubbo、Gateway 等场景按[依赖表](/pages/9bca79/)补充对应模块。普通 WebFlux 也可以使用 Web starter 中的适配，传播方式见[WebFlux](/guide/webflux)。
+Feign、Dubbo、Gateway 等场景按[依赖表](/pages/9bca79/)补充对应模块。普通 WebFlux 也可以使用 Web starter 中的适配，传播方式见[WebFlux](/guide/webflux/)。
 
 ## 2. 配置日志
 
@@ -106,7 +106,7 @@ public RestTemplate restTemplate() {
 
 从该 Bean 发起调用后，已经接入 TLog 的下游应看到相同 traceId 和子 span，例如 `0.1`。不要在方法中临时 `new RestTemplate()` 并期待 Bean 自动装饰。
 
-用 `KafkaTemplate` 或 `RabbitTemplate` 发送消息也一样：starter 会把 traceId 写进消息 header，`@KafkaListener`、`@RabbitListener` 里的日志沿用同一个 traceId。详见 [Kafka](/guide/kafka) 和 [RabbitMQ](/guide/rabbitmq)。
+用 `KafkaTemplate` 或 `RabbitTemplate` 发送消息也一样：starter 会把 traceId 写进消息 header，`@KafkaListener`、`@RabbitListener` 里的日志沿用同一个 traceId。详见 [Kafka](/guide/kafka/) 和 [RabbitMQ](/guide/rabbitmq/)。
 
 `WebClient.Builder` 和 Spring 6.1+ 的 `RestClient.Builder` 也支持自动装饰；Builder 需要由应用或对应 Boot 客户端自动配置提供。Boot 4 拆分了部分客户端 starter，不能只凭服务端 starter 推断 Builder 一定存在。
 
@@ -114,6 +114,6 @@ public RestTemplate restTemplate() {
 
 `tlog.async.enabled` 默认开启，对 Spring 管理的 `ThreadPoolTaskExecutor` / `SimpleAsyncTaskExecutor` 自动组合 TaskDecorator。`@Async` 仍需按 Spring 的方式启用并通过代理调用。自行创建的线程池使用 `TLogExecutors.wrap`，详细示例见[线程池](/pages/a69e1d/)。
 
-需要自己的 traceId 格式时，可声明一个 `TLogIdGenerator` Bean；配置示例、优先级和功能开关见[配置参考](/guide/configuration)。
+需要自己的 traceId 格式时，可声明一个 `TLogIdGenerator` Bean；配置示例、优先级和功能开关见[配置参考](/guide/configuration/)。
 
-完整跨进程验证见[可运行示例](/guide/examples)。从 1.x 迁移时先读[升级指南](/guide/upgrade)，其中包含明确移除项和异步边界。
+完整跨进程验证见[可运行示例](/guide/examples/)。从 1.x 迁移时先读[升级指南](/guide/upgrade/)，其中包含明确移除项和异步边界。

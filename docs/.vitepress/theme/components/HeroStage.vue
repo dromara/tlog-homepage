@@ -101,7 +101,7 @@ onBeforeUnmount(() => {
     <canvas ref="canvas" class="particle-canvas" aria-hidden="true" />
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="hero-content">
-      <a class="release-pill" href="/guide/upgrade">
+      <a class="release-pill" href="/guide/upgrade/">
         <span class="pill-new">NEW</span>
         <span>全新 2.0 · 一套 starter 覆盖 Spring Boot 2 / 3 / 4</span>
         <PhArrowRight :size="14" />
@@ -111,7 +111,7 @@ onBeforeUnmount(() => {
         <p class="slogan">一个 TraceId，<span class="gradient-text">串起每一行日志。</span></p>
         <p class="hero-sub">轻量级分布式日志追踪。跨服务、跨线程、跨网关、跨消息队列，<br class="desktop-break">让散落各处的日志，回到同一条请求链路。</p>
         <div class="hero-actions">
-          <a class="tl-button primary" href="/guide/quick-start"><span>开始接入 2.0</span><PhArrowRight :size="18" /></a>
+          <a class="tl-button primary" href="/guide/quick-start/"><span>开始接入 2.0</span><PhArrowRight :size="18" /></a>
           <a class="tl-button ghost" href="https://github.com/dromara/TLog" target="_blank" rel="noopener noreferrer"><PhGithubLogo :size="19" /><span>GitHub</span><PhArrowUpRight :size="14" /></a>
         </div>
       </div>

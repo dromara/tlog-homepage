@@ -1,6 +1,6 @@
 ---
 title: 从 1.x 升级到 2.0
-permalink: /guide/upgrade
+permalink: /guide/upgrade/
 description: '从 TLog 1.x 迁移到 2.0：依赖、移除项、日志、异步、配置和 API 兼容说明。'
 ---
 
@@ -50,7 +50,7 @@ Boot Servlet 入口由 MVC 拦截器改为 Filter，覆盖 REQUEST、ASYNC、ERR
 
 非 Boot 用户可继续使用保留的 javax MVC 组件，或按容器命名空间手工注册 Filter。容器外的手工注册要自行设置 dispatcher types 和 asyncSupported。
 
-普通 WebFlux 入口使用 Reactor Context 隔离请求，不改写原始请求头；Gateway、Soul/ShenYu 的转发模式会向下游生成子 span。首次普通 HTTP/WebClient 出站的子 span 为 `0.1`。响应式边界见[WebFlux 文档](/guide/webflux)。
+普通 WebFlux 入口使用 Reactor Context 隔离请求，不改写原始请求头；Gateway、Soul/ShenYu 的转发模式会向下游生成子 span。首次普通 HTTP/WebClient 出站的子 span 为 `0.1`。响应式边界见[WebFlux 文档](/guide/webflux/)。
 
 容器中的 RestTemplate、WebClient.Builder、RestClient.Builder 自动添加对应拦截器。不要给已经自动装饰的对象重复添加同一拦截器；容器外创建的客户端仍需手工安装。Boot 4 的客户端 Builder 可能需要对应客户端 starter 或显式 Bean。
 
@@ -75,7 +75,7 @@ try {
 
 ## 配置与扩展点
 
-新增总开关、Web/异步/HTTP 客户端/Scheduled 开关及响应头开关。旧 camelCase 配置可继续通过 Spring relaxed binding 绑定，完整表格见[配置参考](/guide/configuration)。
+新增总开关、Web/异步/HTTP 客户端/Scheduled 开关及响应头开关。旧 camelCase 配置可继续通过 Spring relaxed binding 绑定，完整表格见[配置参考](/guide/configuration/)。
 
 `spring.application.name` 可选，未设置时使用 `NONE`。纯 Java 应用使用 `TLogRuntime.setAppName("service")`，不需要为了传播器加入 Spring。
 
@@ -93,4 +93,4 @@ try {
 
 用真实请求检查日志前缀、MDC、下游传播头、异常后的线程复用和异步响应渲染。W3C 支持限于入站 traceId 复用，不包含完整出站 traceparent/tracestate 或 span 导出。
 
-当前本地验证范围与未覆盖项见[兼容性与验收](/guide/compatibility)，可运行工程见[示例](/guide/examples)。旧文档的固定性能损耗数字不适用于 2.0，应按自己的负载测量。
+当前本地验证范围与未覆盖项见[兼容性与验收](/guide/compatibility/)，可运行工程见[示例](/guide/examples/)。旧文档的固定性能损耗数字不适用于 2.0，应按自己的负载测量。

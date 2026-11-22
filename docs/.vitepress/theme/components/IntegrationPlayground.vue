@@ -68,6 +68,8 @@ let inView = true
 let destroyed = false
 let loadId = 0
 let tileSize = 88
+let stageWidth = 0
+let stageHeight = 0
 let lastLayout = ''
 
 function setTileElement(name: string, el: Element | ComponentPublicInstance | null) {
@@ -75,9 +77,27 @@ function setTileElement(name: string, el: Element | ComponentPublicInstance | nu
   else if ('nodeType' in el && el.nodeType === 1) tileElements.set(name, el as HTMLElement)
 }
 
+// The pointer may leave the stage while dragging; the anchor never does.
 function pointFrom(event: PointerEvent) {
   const rect = stage.value!.getBoundingClientRect()
-  return { x: event.clientX - rect.left, y: event.clientY - rect.top }
+  return {
+    x: Math.min(rect.width, Math.max(0, event.clientX - rect.left)),
+    y: Math.min(rect.height, Math.max(0, event.clientY - rect.top)),
+  }
+}
+
+// Fast throws or a stiff drag can tunnel through the walls; pull any body that
+// got out back inside the stage and drop the velocity that carried it there.
+function containBodies() {
+  if (!physics) return
+  for (const body of bodies.values()) {
+    const { min, max } = body.bounds
+    const dx = min.x < 0 ? -min.x : max.x > stageWidth ? stageWidth - max.x : 0
+    const dy = min.y < 0 ? -min.y : max.y > stageHeight ? stageHeight - max.y : 0
+    if (!dx && !dy) continue
+    physics.Body.setPosition(body, { x: body.position.x + dx, y: body.position.y + dy })
+    physics.Body.setVelocity(body, { x: dx ? 0 : body.velocity.x, y: dy ? 0 : body.velocity.y })
+  }
 }
 
 function beginDrag(name: string, event: PointerEvent) {
@@ -175,6 +195,7 @@ function tick(time: number) {
   accumulator += elapsed
   while (accumulator >= 1000 / 60) {
     physics.Engine.update(engine, 1000 / 60)
+    containBodies()
     accumulator -= 1000 / 60
   }
   renderBodies()
@@ -198,15 +219,19 @@ function setupWorld() {
   const sample = tileElements.get(integrations[0].name)?.querySelector('button')
   tileSize = sample?.getBoundingClientRect().width || 80
   lastLayout = `${Math.round(rect.width)}:${Math.round(rect.height)}:${Math.round(tileSize)}`
+  stageWidth = rect.width
+  stageHeight = rect.height
   engine = physics.Engine.create({ enableSleeping: true, positionIterations: 10, velocityIterations: 8 })
   engine.gravity.y = 1
 
+  // Walls hug the stage's four edges; they are thick so fast tiles can't tunnel through.
+  const wall = 400
   const wallOptions = { isStatic: true, restitution: 0.3, friction: 0.16 }
   const walls = [
-    physics.Bodies.rectangle(rect.width / 2, rect.height + 40, rect.width + 160, 80, wallOptions),
-    physics.Bodies.rectangle(-40, rect.height / 2, 80, rect.height * 5, wallOptions),
-    physics.Bodies.rectangle(rect.width + 40, rect.height / 2, 80, rect.height * 5, wallOptions),
-    physics.Bodies.rectangle(rect.width / 2, -rect.height * 1.5, rect.width + 160, 80, wallOptions),
+    physics.Bodies.rectangle(rect.width / 2, rect.height + wall / 2, rect.width + wall * 2, wall, wallOptions),
+    physics.Bodies.rectangle(-wall / 2, rect.height / 2, wall, rect.height + wall * 2, wallOptions),
+    physics.Bodies.rectangle(rect.width + wall / 2, rect.height / 2, wall, rect.height + wall * 2, wallOptions),
+    physics.Bodies.rectangle(rect.width / 2, -wall / 2, rect.width + wall * 2, wall, wallOptions),
   ]
   physics.Composite.add(engine.world, walls)
 

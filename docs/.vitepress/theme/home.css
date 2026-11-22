@@ -13,6 +13,9 @@
 /* Desktop morph: the canvas stays on screen while the wordmark flies into the
    journey's topology below; the journey's SVG then fades in over the particles. */
 .hero.is-morph .particle-canvas { position: fixed; inset: 0; height: 100vh; pointer-events: none; }
+/* The bottom fade must stay under the fixed canvas, or it dims the particles above
+   the hero's edge and leaves a visible seam against the journey below. */
+.hero.is-morph::after { z-index: -2; }
 .hero-glow { position: absolute; inset: 0; z-index: -2; pointer-events: none;
   background:
     radial-gradient(40% 32% at 50% 44%, color-mix(in srgb, var(--tl-c2) 18%, transparent), transparent 70%),
@@ -121,6 +124,9 @@
 .grid-dots circle { fill: var(--tl-line-strong); }
 .edge-rail { fill: none; stroke: var(--tl-line-strong); stroke-width: 1.5; stroke-dasharray: 3 6; }
 .edge-line, .edge-glow { fill: none; stroke: url(#edge-gradient); stroke-linecap: round; stroke-dasharray: 1 1; transition: stroke-dashoffset .12s linear; }
+/* Freshly inserted packets sit at the SVG origin until animateMotion places them; keep them hidden meanwhile. */
+.packets { animation: packets-in .3s ease-in both; }
+@keyframes packets-in { from { opacity: 0; } }
 .packet-core { fill: #fff; }
 :root:not(.dark) .packet-core { fill: var(--tl-c2); }
 .edge.live .edge-glow { animation: wire-breathe 2.4s ease-in-out infinite; }

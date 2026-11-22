@@ -15,105 +15,140 @@
     font-weight: 100 800;
   }
   :root {
-    --bg: #05060b;
+    --ink: #0b1020;
+    --muted: #4f5872;
+    --line: #dde1ea;
     --c1: #0fae8c;
     --c2: #3b7cf0;
     --c3: #7a5af5;
+    --grad: linear-gradient(100deg, var(--c1) 0%, var(--c2) 52%, var(--c3) 100%);
     --sans: 'Inter Variable', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
     --mono: 'JetBrains Mono Variable', 'SF Mono', Menlo, monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--bg); }
+  html, body { background: #f6f7fb; }
+  .grad-text {
+    background: var(--grad);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  .bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(620px 520px at 82% 18%, #3b7cf02e, transparent 70%),
+      radial-gradient(560px 480px at 96% 96%, #7a5af528, transparent 70%),
+      radial-gradient(520px 420px at 58% 100%, #0fae8c22, transparent 70%),
+      #f6f7fb;
+  }
+  .dots {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(#0b102014 1.6px, transparent 1.6px);
+    background-size: 34px 34px;
+    mask-image: linear-gradient(90deg, transparent 30%, #000 70%);
+  }
 
   /* 主封面 2.35:1，按 2 倍尺寸绘制，导出 1800×766 */
   .cover {
     position: relative;
-    width: 1800px;
-    height: 766px;
+    width: 1800px; height: 766px;
     overflow: hidden;
-    background:
-      radial-gradient(900px 520px at 78% 30%, #3b7cf026, transparent 70%),
-      radial-gradient(700px 480px at 92% 90%, #7a5af522, transparent 70%),
-      radial-gradient(600px 400px at 10% 100%, #0fae8c1c, transparent 70%),
-      var(--bg);
     font-family: var(--sans);
-    color: #f4f6fb;
+    color: var(--ink);
   }
-  .grid {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(#ffffff08 1px, transparent 1px),
-      linear-gradient(90deg, #ffffff08 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse at 70% 50%, #000 20%, transparent 75%);
-  }
-
-  /* 背景里的日志：大部分是暗的，同一条 trace 的行被点亮 */
-  .logs {
-    position: absolute;
-    top: 70px; left: 930px;
-    width: 900px;
-    font-family: var(--mono);
-    font-size: 18px;
-    line-height: 37px;
-    white-space: pre;
-    color: #ffffff1f;
-    transform: rotate(-4deg);
-    transform-origin: left top;
-  }
-  .logs .hit { color: #dfe7ff; }
-  .logs .hit b { font-weight: 600; }
-  .logs .hit .sp { color: var(--c1); }
-  .logs .hit .tid {
-    background: linear-gradient(100deg, var(--c1), var(--c2) 55%, var(--c3));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-
-  /* 把被点亮的行串起来的追踪线 */
-  .thread { position: absolute; inset: 0; }
-
-  .left-fade {
-    position: absolute; inset: 0;
-    background: linear-gradient(90deg, var(--bg) 0%, var(--bg) 40%, #05060bb0 48%, transparent 60%);
-  }
-
   .copy {
     position: absolute;
-    left: 96px; top: 0; bottom: 0;
+    left: 112px; top: 0; bottom: 0;
     display: flex; flex-direction: column; justify-content: center;
   }
   .brand {
-    display: flex; align-items: center; gap: 18px;
-    font-size: 30px; font-weight: 600; letter-spacing: .02em;
-    color: #c9cfdf;
+    display: flex; align-items: center; gap: 16px;
+    font-size: 34px; font-weight: 700; letter-spacing: -.01em;
   }
-  .brand img { width: 56px; height: 56px; }
-  .title {
-    margin-top: 26px;
-    font-size: 188px; line-height: .95; font-weight: 800;
-    letter-spacing: -.045em;
+  .brand img { width: 58px; height: 58px; }
+  .brand .tag {
+    margin-left: 6px;
+    font-family: var(--mono); font-size: 22px; font-weight: 600;
+    padding: 6px 16px; border-radius: 999px;
+    color: #087a62; background: #0fae8c1c; border: 1.5px solid #0fae8c40;
   }
-  .title .v {
-    background: linear-gradient(100deg, var(--c1) 0%, var(--c2) 52%, var(--c3) 100%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
+  .h1 {
+    margin-top: 44px;
+    font-size: 116px; line-height: 1.12; font-weight: 600;
+    letter-spacing: .01em;
+  }
+  .h1 .en {
+    font-weight: 800; letter-spacing: -.035em;
   }
   .sub {
     margin-top: 34px;
-    font-size: 40px; font-weight: 600; letter-spacing: .01em;
-    color: #eef1f8;
+    font-size: 38px; font-weight: 500;
+    color: var(--muted);
   }
-  .tags {
+  .sub b { color: var(--ink); font-weight: 600; }
+
+  /* 右侧：一次请求的日志卡片 */
+  .card {
+    position: absolute;
+    left: 1080px; top: 92px;
+    width: 640px;
+    padding: 34px 40px 38px;
+    border-radius: 32px;
+    background: #ffffffe6;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 2px 0 #fff inset, 0 40px 90px -36px #1a2a5a55, 0 0 0 1.5px #0b10200d;
+    transform: rotate(-2.5deg);
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .lights { display: flex; gap: 10px; }
+  .lights i { width: 16px; height: 16px; border-radius: 50%; background: #e3e6ee; }
+  .card-head .file { font-family: var(--mono); font-size: 20px; color: #8a93ab; }
+  .tid-label {
     margin-top: 30px;
-    display: flex; gap: 14px;
+    font-family: var(--mono); font-size: 19px; color: #8a93ab; letter-spacing: .06em;
   }
-  .tags span {
-    font-family: var(--mono);
-    font-size: 23px;
-    padding: 9px 20px;
-    border-radius: 999px;
-    border: 1.5px solid #ffffff24;
-    background: #ffffff0a;
-    color: #b7bfd4;
+  .tid {
+    margin-top: 6px;
+    font-family: var(--mono); font-size: 40px; font-weight: 700; letter-spacing: -.01em;
+  }
+  .rows {
+    position: relative;
+    margin-top: 26px;
+    border-top: 1.5px dashed var(--line);
+    padding-top: 12px;
+  }
+  .rows::before {
+    content: '';
+    position: absolute;
+    left: 11px; top: 52px; bottom: 40px;
+    width: 4px; border-radius: 4px;
+    background: linear-gradient(180deg, var(--c1), var(--c2) 55%, var(--c3));
+  }
+  .row {
+    position: relative;
+    display: flex; align-items: center;
+    height: 76px;
+    padding-left: 48px;
+  }
+  .row::before {
+    content: '';
+    position: absolute; left: 3px; top: 50%;
+    width: 20px; height: 20px; margin-top: -10px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid var(--dot, var(--c2));
+  }
+  .row .span {
+    width: 92px;
+    font-family: var(--mono); font-size: 24px; font-weight: 600; color: #087a62;
+  }
+  .row .svc { width: 150px; font-family: var(--mono); font-size: 26px; font-weight: 700; }
+  .row .msg { flex: 1; font-size: 25px; color: var(--muted); }
+  .row .via {
+    font-family: var(--mono); font-size: 20px; font-weight: 600;
+    padding: 5px 14px; border-radius: 999px;
+    color: var(--via, #315fba); background: color-mix(in srgb, var(--via, #315fba) 10%, transparent);
   }
 
   /* 1:1 分享图，导出 766×766 */
@@ -121,27 +156,30 @@
     position: relative;
     width: 766px; height: 766px;
     overflow: hidden;
-    background:
-      radial-gradient(520px 420px at 80% 12%, #3b7cf030, transparent 70%),
-      radial-gradient(480px 420px at 10% 100%, #7a5af52a, transparent 70%),
-      var(--bg);
     font-family: var(--sans);
-    color: #f4f6fb;
+    color: var(--ink);
+  }
+  .square .bg {
+    background:
+      radial-gradient(420px 380px at 85% 10%, #3b7cf030, transparent 70%),
+      radial-gradient(420px 380px at 10% 100%, #7a5af52a, transparent 70%),
+      radial-gradient(360px 300px at 100% 100%, #0fae8c22, transparent 70%),
+      #f6f7fb;
+  }
+  .square .dots { mask-image: radial-gradient(circle at 50% 50%, transparent 25%, #000 80%); }
+  .square .inner {
+    position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
-  .square .grid { mask-image: radial-gradient(circle at 50% 50%, #000 15%, transparent 70%); }
-  .square img { width: 132px; height: 132px; position: relative; }
-  .square .title { margin-top: 30px; font-size: 150px; position: relative; }
-  .square .line {
-    position: relative;
-    margin-top: 36px;
-    font-family: var(--mono); font-size: 27px; color: #8e97ae;
+  .square img { width: 120px; height: 120px; }
+  .square .big {
+    margin-top: 28px;
+    font-size: 150px; line-height: 1; font-weight: 800; letter-spacing: -.045em;
   }
-  .square .line .sp { color: var(--c1); }
-  .square .line .tid {
-    background: linear-gradient(100deg, var(--c1), var(--c2) 55%, var(--c3));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    font-weight: 600;
+  .square .small {
+    margin-top: 30px;
+    font-size: 44px; font-weight: 600; letter-spacing: .04em;
+    color: var(--muted);
   }
 
   body[data-only="cover"] .square,
@@ -152,104 +190,42 @@
 <body>
 
 <section class="cover" id="cover">
-  <div class="grid"></div>
-  <div class="logs" id="logs"></div>
-  <svg class="thread" id="thread" viewBox="0 0 1800 766" aria-hidden="true">
-    <defs>
-      <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#0fae8c"/>
-        <stop offset=".52" stop-color="#3b7cf0"/>
-        <stop offset="1" stop-color="#7a5af5"/>
-      </linearGradient>
-      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="6" result="b"/>
-        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-    </defs>
-  </svg>
-  <div class="left-fade"></div>
+  <div class="bg"></div>
+  <div class="dots"></div>
   <div class="copy">
-    <div class="brand"><img src="../../docs/public/img/logo.svg" alt="">TLog</div>
-    <div class="title">TLog <span class="v">2.0</span></div>
-    <div class="sub">一个 starter，跑通 Spring Boot 2 / 3 / 4</div>
-    <div class="tags"><span>Kafka</span><span>RabbitMQ</span><span>@Async</span><span>WebFlux</span></div>
+    <div class="brand"><img src="../../docs/public/img/logo.svg" alt="">TLog<span class="tag">v2.0.0</span></div>
+    <div class="h1">鸽了两年的<br><span class="en">TLog <span class="grad-text">2.0</span></span> 来了</div>
+    <div class="sub">一套 starter，跑通 <b>Spring Boot 2 / 3 / 4</b></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="lights"><i></i><i></i><i></i></div>
+      <div class="file">一次下单请求</div>
+    </div>
+    <div class="tid-label">TRACE ID</div>
+    <div class="tid grad-text">7184204306423936</div>
+    <div class="rows">
+      <div class="row" style="--dot:#0fae8c"><span class="span">0</span><span class="svc">order</span><span class="msg">收到下单请求</span><span class="via" style="--via:#087a62">HTTP</span></div>
+      <div class="row" style="--dot:#25979f"><span class="span">0.1</span><span class="svc">stock</span><span class="msg">锁定库存</span><span class="via" style="--via:#1f7a8c">Feign</span></div>
+      <div class="row" style="--dot:#3b7cf0"><span class="span">0.1</span><span class="svc">stock</span><span class="msg">异步记流水</span><span class="via" style="--via:#315fba">@Async</span></div>
+      <div class="row" style="--dot:#5a6bf3"><span class="span">0.2</span><span class="svc">pay</span><span class="msg">创建支付单</span><span class="via" style="--via:#4a55c8">Dubbo</span></div>
+      <div class="row" style="--dot:#7a5af5"><span class="span">0.3</span><span class="svc">notify</span><span class="msg">推送下单成功</span><span class="via" style="--via:#6448bc">Kafka</span></div>
+    </div>
   </div>
 </section>
 
 <section class="square" id="square">
-  <div class="grid"></div>
-  <img src="../../docs/public/img/logo.svg" alt="">
-  <div class="title">TLog <span class="v">2.0</span></div>
-  <div class="line"><span class="sp">&lt;0.1&gt;</span><span class="tid">&lt;7184204306423936&gt;</span> ok</div>
+  <div class="bg"></div>
+  <div class="dots"></div>
+  <div class="inner">
+    <img src="../../docs/public/img/logo.svg" alt="">
+    <div class="big">TLog <span class="grad-text">2.0</span></div>
+    <div class="small">鸽了两年，来了</div>
+  </div>
 </section>
 
 <script>
-  // 只有 hit 行属于同一条链路，其余是别的请求的噪声
-  const TID = '7184204306423936';
-  const rows = [
-    ['', '10:21:07.114 INFO  <0><7183650988911232> stock  - 扣减库存 sku=3021'],
-    ['hit', '0', 'order    - 收到下单请求 userId=1029'],
-    ['', '10:21:07.119 WARN  <0.2><7183650988911232> stock  - 库存不足，重试'],
-    ['', '10:21:07.121 INFO  <0><7184118835036288> user   - 查询会员等级'],
-    ['hit', '0.1', 'stock    - 锁定库存 sku=8812 qty=2'],
-    ['', '10:21:07.130 INFO  <0.1><7184118835036288> coupon - 无可用优惠券'],
-    ['', '10:21:07.133 INFO  <0><7183903377182848> gateway - GET /api/goods'],
-    ['hit', '0.2', 'coupon   - 核销优惠券 id=55120'],
-    ['', '10:21:07.140 INFO  <0.1><7183903377182848> goods  - 命中缓存'],
-    ['hit', '0.2.1', 'pay      - @Async 预创建支付单'],
-    ['', '10:21:07.151 ERROR <0><7184007621476416> notify - 短信通道超时'],
-    ['hit', '0.3', 'kafka    - 投递 order-created'],
-    ['', '10:21:07.163 INFO  <0.3><7183650988911232> stock  - 回滚完成'],
-    ['hit', '0', 'notify   - 消费消息，推送成功'],
-    ['', '10:21:07.172 INFO  <0><7184211109228544> user   - 登录成功'],
-    ['', '10:21:07.176 INFO  <0.1><7184211109228544> point  - 签到积分 +5'],
-  ];
-  const times = ['10:21:07.116', '10:21:07.124', '10:21:07.137', '10:21:07.145', '10:21:07.158', '10:21:07.169'];
-  let t = 0;
-  const logs = document.getElementById('logs');
-  logs.innerHTML = rows.map(r => {
-    if (r[0] !== 'hit') return `<div>${r[1].replace(/</g, '&lt;')}</div>`;
-    return `<div class="hit">${times[t++]} INFO  <span class="sp">&lt;${r[1]}&gt;</span><span class="tid">&lt;${TID}&gt;</span> <b>${r[2]}</b></div>`;
-  }).join('');
-
-  // 在 traceId 左侧画一条穿过所有命中行的曲线，再给每行加一个节点
-  function drawThread() {
-    const svg = document.getElementById('thread');
-    svg.querySelectorAll('path, circle').forEach(el => el.remove());
-    const box = document.getElementById('cover').getBoundingClientRect();
-    const pts = [...logs.querySelectorAll('.hit .sp')].map(el => {
-      const r = el.getBoundingClientRect();
-      return [r.left - box.left - 22, r.top - box.top + r.height / 2];
-    });
-    let d = `M ${pts[0][0] - 40} ${pts[0][1] - 90} L ${pts[0][0]} ${pts[0][1]}`;
-    for (let i = 1; i < pts.length; i++) {
-      const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
-      const dx = (i % 2 ? -70 : 70);
-      d += ` C ${x0 + dx} ${y0 + (y1 - y0) * .4}, ${x1 + dx} ${y1 - (y1 - y0) * .4}, ${x1} ${y1}`;
-    }
-    const last = pts[pts.length - 1];
-    d += ` L ${last[0] + 30} ${last[1] + 120}`;
-    const ns = 'http://www.w3.org/2000/svg';
-    const path = document.createElementNS(ns, 'path');
-    path.setAttribute('d', d);
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', 'url(#g)');
-    path.setAttribute('stroke-width', '4');
-    path.setAttribute('stroke-linecap', 'round');
-    path.setAttribute('filter', 'url(#glow)');
-    svg.appendChild(path);
-    pts.forEach(([x, y]) => {
-      const c = document.createElementNS(ns, 'circle');
-      c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 8);
-      c.setAttribute('fill', '#05060b'); c.setAttribute('stroke', 'url(#g)'); c.setAttribute('stroke-width', 4);
-      svg.appendChild(c);
-    });
-    document.body.dataset.ready = '1';
-  }
-  // 先同步画一次，字体加载完位置会变，再重画
-  drawThread();
-  document.fonts.ready.then(drawThread);
-
   const only = new URLSearchParams(location.search).get('only');
   if (only) document.body.dataset.only = only;
 </script>

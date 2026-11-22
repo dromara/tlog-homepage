@@ -1,6 +1,6 @@
 ---
 title: 对 Kafka 的支持
-permalink: /guide/kafka
+permalink: /guide/kafka/
 description: 'TLog 2.0 通过 Kafka 消息 header 透传 traceId：Spring Kafka 自动装配，原生 kafka-clients 一行接入。'
 ---
 
@@ -136,4 +136,4 @@ while (running) {
 - 监听方法把工作交给其它线程池时，该线程池需要经过 TLog 装饰：Spring 管理的执行器自动装饰，外部线程池使用 `TLogExecutors.wrap`，见[线程池](/pages/a69e1d/)。
 - 已实际运行验证：Spring Kafka 2.8.11 / 3.3.16 / 4.0.6（对应 Boot 2.7 / 3.5 / 4.0）与 Kafka 3.9.1 broker。Kafka 事务、`@RetryableTopic`、Kafka Streams 尚未覆盖。
 
-可运行的双进程示例见[可运行示例](/guide/examples#kafka)。其它消息中间件仍可使用[消息体包装](/pages/097174/)。
+可运行的双进程示例见[可运行示例](/guide/examples/#kafka)。其它消息中间件仍可使用[消息体包装](/pages/097174/)。

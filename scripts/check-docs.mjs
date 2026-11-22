@@ -45,7 +45,7 @@ function pageRoute(source, data) {
     fail(source, 'permalink must be an absolute site path without query or fragment')
     return naturalRoute(source)
   }
-  if (permalink?.startsWith('/pages/') || permalink === '/archives/') return routeKey(permalink)
+  if (permalink?.endsWith('/') && permalink.length > 1) return routeKey(permalink)
   const route = naturalRoute(source)
   if (permalink && routeKey(permalink) !== route) {
     fail(source, `permalink ${permalink} has no matching VitePress rewrite`)

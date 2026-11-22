@@ -31,6 +31,6 @@ onBeforeUnmount(() => clearTimeout(timer))
       <button class="copy-button" type="button" @click="copy" :aria-label="status || '复制当前代码'"><PhCheck v-if="status === '已复制'" :size="18" /><PhCopy v-else :size="18" /></button>
     </div>
     <div id="snippet-code" role="tabpanel" :aria-labelledby="`snippet-tab-${selected}`" tabindex="0"><div class="snippet-filename">{{ current.language }}<span aria-live="polite">{{ status }}</span></div><pre><code>{{ current.code }}</code></pre></div>
-    <div class="snippet-note">Boot 2、3、4 使用同一套坐标，完整步骤见<a href="/guide/quick-start">快速开始</a>。</div>
+    <div class="snippet-note">Boot 2、3、4 使用同一套坐标，完整步骤见<a href="/guide/quick-start/">快速开始</a>。</div>
   </div>
 </template>

@@ -1,6 +1,6 @@
 ---
 title: 配置参考
-permalink: /guide/configuration
+permalink: /guide/configuration/
 description: 'TLog 2.0 配置默认值、开关作用域、自定义 ID 生成器和异步执行器配置。'
 ---
 
@@ -96,7 +96,7 @@ public class TraceIdConfiguration {
 
 唯一候选 Bean 优先于 `tlog.id-generator` 全类名配置；多个候选时可用 `@Primary`。没有合适的自定义生成器时使用默认生成器。生成器返回的 ID 应适合日志和传播头，并由应用的生成策略保证所需的唯一性。
 
-读取请求扩展数据时，新实现使用 `getExtData()`。旧 `extData` 字段和手工链式调用的边界见[升级指南](/guide/upgrade#配置与扩展点)。
+读取请求扩展数据时，新实现使用 `getExtData()`。旧 `extData` 字段和手工链式调用的边界见[升级指南](/guide/upgrade/#配置与扩展点)。
 
 ## Spring 异步执行器
 
@@ -123,7 +123,7 @@ public class AsyncConfiguration {
 
 将业务方法放在另一个 Spring Bean 上，以 `@Async("businessExecutor")` 通过代理调用。TLog 自动装饰这个 Bean，捕获提交时的 TLog 和 MDC；已有 TaskDecorator 会组合保留。用户 decorator 应在 Bean 初始化前设置，初始化后再次替换会覆盖 TLog 的组合结果。
 
-外部线程池、默认 CompletableFuture 执行器和周期任务的行为见[线程池](/pages/a69e1d/)；响应式链路使用[Reactor 上下文](/guide/webflux)。
+外部线程池、默认 CompletableFuture 执行器和周期任务的行为见[线程池](/pages/a69e1d/)；响应式链路使用[Reactor 上下文](/guide/webflux/)。
 
 ## 非 Spring 应用
 
@@ -134,4 +134,4 @@ TLogRuntime.setAppName("batch-client");
 TLogRuntime.setEnabled(true);
 ```
 
-入口建立、日志输出、客户端拦截器与线程传播仍需按场景配置。可直接运行[纯 Java 示例](/guide/examples#纯-java-客户端)验证 classpath 中没有 Spring 时的行为。
+入口建立、日志输出、客户端拦截器与线程传播仍需按场景配置。可直接运行[纯 Java 示例](/guide/examples/#纯-java-客户端)验证 classpath 中没有 Spring 时的行为。
